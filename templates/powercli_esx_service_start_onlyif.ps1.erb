@@ -1,0 +1,14 @@
+# connect to vcenter
+<%= @_connect %>
+
+$ServiceCheck = Get-VMHost -Name '<%= @host %>' | Get-VMHostService | Where-Object {$_.Key -eq '<%= @service %>'} | Select-Object -ExpandProperty Running
+
+# If the service IS already set to 'on' or 'automatic'
+if($ServiceCheck -ne 'True'){
+  # exit 0 so puppet runs
+  exit 0
+}
+else{
+  # exit 1 so puppet skips
+  exit 1
+}

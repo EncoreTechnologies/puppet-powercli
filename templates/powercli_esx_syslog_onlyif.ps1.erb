@@ -1,0 +1,28 @@
+# Connect to vcenter
+<%= @_connect %>
+
+# The syslog server we want set
+$SyslogServer = '<%= @syslog_server %>'
+$SyslogProtocol = '<%= @syslog_protocol %>'
+$Syslog = $SyslogProtocol + "://" + $SyslogServer
+
+# The syslog port we want set
+$SyslogPort = <%= @syslog_port %>
+
+# The current syslog configuration on the host
+$SyslogCheck = Get-VMHostSysLogServer -VMHost <%= @name %>
+
+# If the syslog server we want does not match the currently set syslog server...
+if($Syslog -ne ($SyslogCheck.Host)){
+  # Exit 0 to queue puppet to run
+  exit 0
+}
+
+# If the syslog port we want does not match the currently set syslog port...
+if($SyslogPort -ne ($SyslogCheck.Port)){
+  # Exit 0 to queue puppet to run
+  exit 0
+}
+
+# If we haven't exited yet, we assume the syslog configuration is correct, exit 1 to skip puppet runner
+exit 1

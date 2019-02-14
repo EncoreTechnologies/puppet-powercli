@@ -1,0 +1,15 @@
+# Connect to vcenter
+<%= @_connect %>
+
+$VMKernelTest = Get-VMHostNetworkAdapter -VMHost '<%= @name %>' -VMKernel | Where-Object {$_.IP -eq '<%= @ip %>'}
+
+# If we located the VMKernel 
+if($VMKernelTest){
+  # Exit 1 so puppet skips this vmkernel	
+  exit 1
+}
+# if we didn't locate the VMKernel
+else{
+  # exit 0 so puppet runs against this vmkernel
+  exit 0
+}

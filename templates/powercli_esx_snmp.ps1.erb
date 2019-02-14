@@ -1,0 +1,9 @@
+# Note that this connect is going to the hosts, not vcenter. This is required for Set-vmhostsnmp
+Connect-VIServer '<%= @name %>' -User '<%= @username %>' -Password '<%= @password %>'
+
+$HostSNMP = Get-VMHostSNMP
+
+# If you need a way to clear the hosts previous snmp targets
+# Set-VMHostSnmp -HostSnmp $test -ReadOnlyCommunity @()
+
+Set-VMHostSnmp $HostSNMP -Enabled:$true -ReadOnlyCommunity '<%= @community %>' -TargetCommunity '<%= @community %>' -TargetPort '<%= @port %>' -TargetHost '<%= @target %>' -AddTarget

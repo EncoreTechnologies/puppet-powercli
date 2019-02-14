@@ -1,0 +1,34 @@
+# Connect to vcenter
+<%= @_connect %>
+
+$Discovery = '<%= @discovery %>'
+
+$TargetIP = '<%= @target %>'
+$TargetPort = '<%= @default_port %>'
+
+# Appending the port to the target IP. 
+$Target = $TargetIP + ':' + $TargetPort
+
+$HBA = Get-VMHost -Name '<%= @name %>'  | Get-VMHostHba -Type IScsi | Where {$_.Model -eq "iSCSI Software Adapter"}
+
+# If the discovery type for the current target is static...
+if($Discovery -eq 'static'){
+  # Check for static targets only
+  $TargetsCheck = Get-IScsiHbaTarget -IScsiHba $HBA -Address $Target -Type Static
+}
+
+# If the discovery type for the current target is dynamic...
+if($Discovery -eq 'dynamic'){
+  # Check for send (dynamic discovery) targets only 
+  $TargetsCheck = Get-IScsiHbaTarget -IScsiHba $HBA -Address $Target -Type Send
+}
+
+# If the target existed
+if($TargetsCheck){
+  # exit 1 so puppet skips this target
+  exit 1
+}
+else{
+  # exit 0 so puppet runs for this target
+  exit 0
+}

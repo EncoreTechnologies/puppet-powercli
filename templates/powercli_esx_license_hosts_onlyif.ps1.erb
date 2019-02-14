@@ -1,0 +1,13 @@
+# Connect to vcenter
+<%= @_connect %>
+
+$KeyCheck = Get-VMHost -Name '<%= @name %>' | Select-Object -ExpandProperty LicenseKey 
+
+# Host was located in vcenter and license matches the key we want installed, exit 1 so puppet skips host
+if($KeyCheck -eq '<%= @key %>'){
+    exit 1
+}
+# Exit 0 so puppet installs license on current host
+else{
+   exit 0
+}

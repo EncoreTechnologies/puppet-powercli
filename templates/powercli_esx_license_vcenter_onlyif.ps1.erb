@@ -1,0 +1,34 @@
+# Connect to vcenter
+<%= @_connect %>
+
+# The key we want installed
+$Key = '<%= @key %>'
+
+$LicenseManagement = get-view $global:defaultviserver
+$LicenseManager = get-view $LicenseManagement.Content.LicenseManager
+
+$KeyCheck = $LicenseManager.Licenses | Where-Object {$_.LicenseKey -eq $Key}
+
+# Check if key already installed in license manager
+if($KeyCheck){
+
+    # Grabbing the key currently assigned to vcenter (which would include a trial license)
+    $LicenseAssignmentManager = get-view $LicenseManager.LicenseAssignmentManager
+    $VCenterLicenseInfo = $LicenseAssignmentManager.QueryAssignedLicenses("") | Where-Object {$_.EntityDisplayName -eq '<%= @name %>'}
+    $CurrentVCenterLicense = $VCenterLicenseInfo.AssignedLicense.LicenseKey
+
+    # If the License is installed but not applied to vcenter
+    if($CurrentVCenterLicense -ne $Key){
+        # exit 0 so puppet runs
+        exit 0
+    }
+    # If the license is installed but already applied to vcenter
+    else{
+	# exit 1 so puppet skips
+        exit 1
+    }
+}
+# If key not installed, exit 0 so puppet installs
+else{
+    exit 0
+}

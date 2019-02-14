@@ -1,0 +1,21 @@
+# Connect to vcenter
+<%= @_connect %>
+
+# Get all uplinks on the dvswitch
+$DvUplinks = Get-VDPort -VDSwitch '<%= @dvswitch_name %>' -Uplink
+
+# Iterate all dvswitch uplinks...
+foreach($u in $DvUplinks){
+    $Uplink = $u.ConnectedEntity.Name
+    $VMHost = $u.ProxyHost.Name
+
+    # If we found the specific uplink for the specific vmhost already configured as an uplink...
+    if($Uplink -eq '<%= @nic %>' -and $VMHost -eq '<%= @name %>'){
+        # Exit 1 so puppet skips this uplink
+        exit 1
+    }
+}
+
+# If we didn't find the specific uplink from the specific vmhost configured as an uplink
+# Exit 0 so puppet runs against this uplink
+exit 0

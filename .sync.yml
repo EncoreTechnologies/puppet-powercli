@@ -22,7 +22,7 @@ Gemfile:
   required:
     ':development':
       - gem: 'puppet-lint-absolute_classname-check'
-        version: '>= 0.2.4'
+        version: '>= 1.0.0'
       - gem: 'puppet-lint-absolute_template_path'
         version: '>= 1.0.1'
       - gem: 'puppet-lint-alias-check'
@@ -45,5 +45,8 @@ Gemfile:
         version: '>= 0.3.0'
       - gem: 'puppet-lint-version_comparison-check'
         version: '>= 0.2.1'
+Rakefile:
+  extras:
+    - 'PuppetLint.configuration.absolute_classname_reverse = true'
 spec/spec_helper.rb:
   mock_with: ':rspec'

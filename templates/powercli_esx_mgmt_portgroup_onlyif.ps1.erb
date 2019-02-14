@@ -1,0 +1,15 @@
+# Connect to vcenter
+<%= @_connect %>
+
+$ManagementCheck = Get-VirtualPortGroup -VMHost '<%= @name %>' -VirtualSwitch '<%= @vswitch %>' -Name '<%= @portgroup %>'
+
+# If we located the portgroup
+if($ManagementCheck){
+  # Exit 1 so puppet skips this portgroup
+  exit 1
+}
+# If we didn't locate the portgroup
+else{
+  # exit 0 so puppet skips this portgroup
+  exit 0
+}

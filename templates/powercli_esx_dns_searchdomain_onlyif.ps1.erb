@@ -1,0 +1,17 @@
+# Connect to vcenter
+<%= @_connect %>
+
+# The searchdomain we want on the host
+$SearchDomain = '<%= @domain %>'
+
+# The current searchdomain of the host
+$SearchDomainCheck = Get-VMHost -Name '<%= @name %>' | Get-VMHostNetwork | Select-Object -ExpandProperty SearchDomain
+
+# If the searchdomain was set to what we wanted
+if($SearchDomain -eq $SearchDomainCheck){
+   exit 1
+}
+# If the searchdomain is NOT what we want
+else{
+   exit 0
+}

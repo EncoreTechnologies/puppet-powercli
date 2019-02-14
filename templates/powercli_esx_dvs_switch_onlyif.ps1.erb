@@ -1,0 +1,13 @@
+# Connect to vcenter
+<%= @_connect %>
+
+$DVSwitchCheck = Get-VDSwitch -Name '<%= @dvswitch_name %>'
+
+# If the dvswitch was located..
+if($DVSwitchCheck){
+  exit 1
+}
+# If the dvswitch was not located...
+else{
+  exit 0
+}

@@ -1,0 +1,7 @@
+<%= @_connect %>
+
+$CurrentManagementVMKernel = Get-VMHostNetworkAdapter -VMHost '<%= @name %>' -VirtualSwitch '<%= @vswitch %>' -VMKernel | Where-Object {$_.ManagementTrafficEnabled -eq $true}
+
+$CurrentManagementPortgroup = $CurrentManagementVMKernel.PortGroupName
+
+Get-VirtualPortGroup -VMHost '<%= @name %>' -VirtualSwitch '<%= @vswitch %>' -Name $CurrentManagementPortgroup | Set-VirtualPortGroup -Name '<%= @portgroup %>'

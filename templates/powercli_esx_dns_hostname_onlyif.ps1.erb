@@ -1,0 +1,17 @@
+# Connect to vcenter
+<%= @_connect %>
+
+# The hostname we want on the host
+$Hostname = '<%= @hostname %>'
+
+# The current hostname of the host
+$HostnameCheck = Get-VMHost -Name '<%= @name %>' | Get-VMHostNetwork | Select-Object -ExpandProperty Hostname
+
+# If the hostname was set to what we wanted
+if($Hostname -eq $HostnameCheck){
+   exit 1
+}
+# If the hostname is NOT what we want
+else{
+   exit 0
+}

@@ -1,0 +1,27 @@
+# Note that this connect is going to the hosts, not vcenter. This is required for Set-vmhostsnmp
+Connect-VIServer '<%= @name %>' -User '<%= @username %>' -Password '<%= @password %>'
+
+$SNMPCheck = Get-VMHostSNMP
+
+if(($SNMPCheck.Enabled) -ne 'True'){
+     exit 0
+}
+
+if(($SNMPCheck.Port) -ne '<%= @port %>'){
+     exit 0
+}
+
+foreach($t in ($SNMPCheck.TrapTargets)){
+    
+    if(($t.HostName) -ne '<%= @target %>'){
+         exit 0
+    }
+    if(($t.Community) -ne '<%= @community %>'){
+         exit 0
+    }
+    if(($t.Port) -ne '<%= @port %>'){
+         exit 0
+    }
+}
+
+exit 1

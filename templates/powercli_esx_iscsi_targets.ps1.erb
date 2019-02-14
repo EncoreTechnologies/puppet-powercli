@@ -1,0 +1,34 @@
+<%= @_connect %>
+
+$HBA = Get-VMHost -Name '<%= @name %>'  | Get-VMHostHba -Type IScsi | Where {$_.Model -eq "iSCSI Software Adapter"}
+
+$ChapUser = '<%= @chap_user %>'
+$Discovery = '<%= @discovery %>'
+
+$TargetIP = '<%= @target %>'
+$TargetPort = '<%= @default_port %>'
+
+# Appending the port to the target IP. 
+$Target = $TargetIP + ':' + $TargetPort
+
+if ($Discovery -eq 'static'){
+
+  if ($ChapUser){
+    New-IScsiHbaTarget -IScsiHba $HBA -Address $Target -ChapType Required -ChapName '<%= @chap_user %>' -ChapPassword '<%= @chap_pass %>' -type Static -IScsiName '<%= @iscsi_name %>'
+  }
+
+  else{
+    New-IScsiHbaTarget -IScsiHba $HBA -Address $Target -ChapType Prohibited -type Static -IScsiName '<%= @iscsi_name %>'
+  }
+}
+
+if ($Discovery -eq 'dynamic'){
+
+  if ($ChapUser){
+    New-IScsiHbaTarget -IScsiHba $HBA -Address $Target -ChapType Required -ChapName '<%= @chap_user %>' -ChapPassword '<%= @chap_pass %>'
+  }
+
+  else{
+    New-IScsiHbaTarget -IScsiHba $HBA -Address $Target -ChapType Prohibited
+  }
+}

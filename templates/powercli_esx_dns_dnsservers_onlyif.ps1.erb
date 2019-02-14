@@ -1,0 +1,37 @@
+# Connect to vcenter
+<%= @_connect %>
+
+# The dns servers we want on the host
+# Example @_dns_servers = '192.168.1.10, 192.168.1.11'
+$DnsServers = '<%= @_dns_servers %>'
+
+# Split the DNS servers into '192.168.1.10', ' 192.168.1.11' (note the space preceding the 2nd IP)
+$DnsServersArray = $DnsServers.split(",")
+
+# The current dns servers of the host
+$DnsServersCheck = Get-VMHost -name '<%= @name %>' | Get-VMHostNetwork | Select-Object -ExpandProperty DnsAddress
+
+# Check if the host has any DNS servers currently. Otherwise we can get "You cannot call a method on a null-valued expression" errors when attempting to check for items in this array
+# If the host has no current DNS servers...
+if(!$DnsServersCheck){
+  # exit 0 so puppet runs
+  exit 0
+}
+
+
+# For each DNS server in the list of DNS servers we want
+foreach($s in $DnsServersArray){
+
+    # Trim the whitespace from the current $s.
+    # This is to remove the space that starts ' 192.168.1.11'
+    $s = $s.Trim(" ")
+    
+    # If the DNS server we wanted ISN'T in the $DnsServersCheck array, queue puppet to set DNS servers
+    if(!$DnsServersCheck.Contains($s)){
+        # exit 0 so puppet runs
+        exit 0
+    }
+}
+
+# If we didn't 'exit 0' yet, we didn't find any DNS servers we wanted to be added that weren't present on the host. 
+exit 1

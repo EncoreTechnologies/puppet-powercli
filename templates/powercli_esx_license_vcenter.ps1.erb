@@ -1,0 +1,12 @@
+# Connect to vcenter
+$VCenter = <%= @_connect %>
+# Install vcenter license into license manager, does NOT apply to vcenter
+$Key = '<%= @key %>'
+
+$LicenseManagement = get-view $global:defaultviserver
+$LicenseManager = get-view $LicenseManagement.Content.LicenseManager
+$LicenseManager.AddLicense($Key,$null)
+  
+# Apply vcenter license to vcenter server
+$LicenseAssignmentManager = get-view $LicenseManager.LicenseAssignmentManager
+$LicenseAssignmentManager.UpdateAssignedLicense($VCenter.instanceuuid,$Key,$Null)

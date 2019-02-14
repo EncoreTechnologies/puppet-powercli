@@ -1,0 +1,15 @@
+# Connect to vcenter
+<%= @_connect %>
+
+$PortgroupCheck = Get-VDSwitch -name '<%= @dvswitch %>' | Get-VDPortgroup -name <%= @pg_name %>
+
+# If we located the portgroup
+if($PortgroupCheck){
+  # Exit 1 so puppet skips this portgroup
+  exit 1
+}
+# If we didn't locate the portgroup
+else{
+  # Exit 0 so puppet runs against this portgroup
+  exit 0
+}

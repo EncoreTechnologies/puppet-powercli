@@ -1,0 +1,14 @@
+# Connect to vcenter
+<%= @_connect %>
+
+$IscsiCheck = Get-VMHost -Name '<%= @name %>' | Get-VMHostStorage
+
+# If iscsi was already enabled..
+if(($IscsiCheck.SoftwareIScsiEnabled) -eq 'True'){
+  # exit 1 so puppet skips this host
+  exit 1
+}
+else{
+  # exit 0 so puppet enables iscsi
+  exit 0
+}

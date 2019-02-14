@@ -1,0 +1,12 @@
+<%= @_connect %>
+
+$Check = Get-VMHost -Name '<%= @name %>'
+
+# Host was located in vcenter, exit 1 so puppet skips host
+if($Check){
+    exit 1
+}
+# Host was not found in vcenter, exit 0 so puppet adds hosts
+else{
+   exit 0
+}

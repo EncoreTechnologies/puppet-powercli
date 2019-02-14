@@ -1,0 +1,11 @@
+# Connect to vcenter
+<%= @_connect %>
+
+# The old / original NTP servers
+$OriginalNTPServers = Get-VMHostNtpServer -VMHost '<%= @name %>'
+
+# Remove old NTP servers
+Remove-VMHostNtpServer -VMHost '<%= @name %>' -NtpServer $OriginalNTPServers -confirm:$false
+
+# Set the NTP servers we want
+Get-VMHost -name '<%= @name %>' | Add-VMHostNtpServer -NtpServer <%= @_ntp_servers %>
