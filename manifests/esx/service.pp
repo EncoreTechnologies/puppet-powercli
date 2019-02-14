@@ -3,7 +3,7 @@ define powercli::esx::service (
   $service,
   $host,
 ) {
-  include ::powercli::vcenter::connection
+  include powercli::vcenter::connection
   $_connect = $powercli::vcenter::connection::connect
 
   $_get_service = "${_connect}; Get-VMHost -Name '${host}' | Get-VMHostService | Where-Object {\$_.Key -eq '${service}'}"
