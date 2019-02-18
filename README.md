@@ -1,9 +1,4 @@
-
 # powercli
-
-Welcome to your new module. A short overview of the generated parts can be found in the PDK documentation at https://puppet.com/pdk/latest/pdk_generating_modules.html .
-
-The README template below provides a starting point with details about what information to include in your README.
 
 #### Table of Contents
 
@@ -18,9 +13,20 @@ The README template below provides a starting point with details about what info
 
 ## Description
 
-Briefly tell users why they might want to use your module. Explain what your module does and what kind of problems users can solve with it.
+Puppet module that manages the install of [VMware PowerCLI](https://www.vmware.com/support/developer/PowerCLI/)
+on a Windows host. Once PowerCLI is installed we can then use it to manage VMware ESX and vCenter
+with Puppet resources.
 
-This should be a fairly short description helps the user decide if your module is what they want.
+## How it works
+
+``` shell
++---------------+    +----------------+        +---------+
+| Puppet Master | -> | PowerCLI Proxy | -----> | vCenter |---------+
++---------------+    +----------------+   |    +---------+         v
+                                          |                     +-----+
+                                          +-------------------> | ESX |
+                                                                +-----+
+```
 
 ## Setup
 

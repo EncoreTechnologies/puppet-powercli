@@ -1,5 +1,5 @@
 # @summary Resource that manages ESX NTP via PowerCLI
-define powercli::vcenter::ntp (
+define powercli::esx::ntp (
   $ntp_servers,
 ) {
   include powercli::vcenter::connection
@@ -13,7 +13,7 @@ define powercli::vcenter::ntp (
     onlyif   => template('powercli/powercli_esx_ntp_onlyif.ps1.erb'),
   }
 
-  powercli::vcenter::esx_service {"${name} - ntp":
+  powercli::esx::service {"${name} - ntp":
     service   => 'ntpd',
     host      => $name,
     subscribe => Exec["${name}: Set NTP Servers"],

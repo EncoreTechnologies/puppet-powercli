@@ -14,7 +14,7 @@ define powercli::esx::syslog (
     onlyif   => template('powercli/powercli_esx_syslog_onlyif.ps1.erb'),
   }
 
-  powercli::esx_service {"${name} - syslog":
+  powercli::esx::service {"${name} - syslog":
     service   => 'vmsyslogd',
     host      => $name,
     subscribe => Exec["${name} Set Syslog Servers"],
