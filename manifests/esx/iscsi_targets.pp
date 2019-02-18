@@ -42,10 +42,10 @@ define powercli::esx::iscsi_targets (
   }
 
   # Calls the rescan resource but it does not run because the exec within the rescan resource is `refreshonly`
-  powercli::esx_iscsi_rescan { $name: }
+  powercli::esx::iscsi_rescan { $name: }
 
   # Aggregates all change events of iSCSI targets being added to the hosts,
   # if any targets were added to a host, that host will be rescanned a single time.
   Exec<| tag == "powercli::esx::iscsi_targets_${name}" |>
-  ~> Powercli::Vcenter::Esx_iscsi_rescan[$name]
+  ~> Powercli::Vcenter::Esx::Iscsi_rescan[$name]
 }
