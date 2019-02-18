@@ -47,5 +47,5 @@ define powercli::esx::iscsi_targets (
   # Aggregates all change events of iSCSI targets being added to the hosts,
   # if any targets were added to a host, that host will be rescanned a single time.
   Exec<| tag == "powercli::esx::iscsi_targets_${name}" |>
-  ~> Powercli::Vcenter::Esx::Iscsi_rescan[$name]
+  ~> Powercli::Esx::Iscsi_rescan[$name]
 }
