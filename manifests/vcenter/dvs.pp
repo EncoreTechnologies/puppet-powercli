@@ -1,6 +1,4 @@
-<<<<<<< HEAD
 # Class that manages DvSwitch creation
-=======
 # @summary Manages distributed virtual switch (dvswitch or dvs for short) creation.
 #
 # @param datacenter
@@ -32,7 +30,6 @@
 #     discovery_proto_operation => 'Both',
 #     dvswitch_name             => 'my_dvswitch_name_here'
 #   }
->>>>>>> 47c4ffc... removed incorrect define keywords and added hosts into resource names
 define powercli::vcenter::dvs (
   $datacenter,
   $mtu,

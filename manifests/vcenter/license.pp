@@ -1,6 +1,4 @@
 # @summary Resource that applies licenses to vcenter
-<<<<<<< HEAD
-=======
 #
 # @param key
 #   License key to be installed for vCenter
@@ -9,7 +7,6 @@
 #   powercli::vcenter::license { 'my-vcenter.fqdn.tld':
 #     key => 'XXXXX-XXXXX-XXXXX-XXXXX-XXXXX'
 #   }
->>>>>>> 47c4ffc... removed incorrect define keywords and added hosts into resource names
 define powercli::vcenter::license (
   $key,
 ) {
