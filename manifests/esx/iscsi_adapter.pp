@@ -1,4 +1,9 @@
-# Class that manages ESX iSCSI software adapter
+# @summary that manages ESX iSCSI software adapter.
+#
+# @example Basic usage
+# powercli::esx::iscsi_adapter {'my-vmware-host.fqdn.tld': }
+
+
 define powercli::esx::iscsi_adapter (
 ) {
   include powercli::vcenter::connection
