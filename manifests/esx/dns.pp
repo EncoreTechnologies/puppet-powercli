@@ -1,4 +1,15 @@
-# Class that manages ESX DNS via PowerCLI
+# @summary Resource that manages ESX hosts; hostname, DNS servers, DNS domain, and DNS search domain
+#
+# @param dns_servers
+#   List of DNS servers that the ESX will use as name servers
+# @param domain
+#   DNS domain suffix which will be the search domain and DNS domain. Example: foo.domain.com
+#
+# @example Basic usage
+#   powercli::esx::dns {'my-vmware-host.fqdn.tld':
+#     dns_servers => '192.168.1.10', '192.168.1.11',
+#     domain => 'foo.domain.com'
+#   }
 define powercli::esx::dns (
   $dns_servers,
   $domain,
