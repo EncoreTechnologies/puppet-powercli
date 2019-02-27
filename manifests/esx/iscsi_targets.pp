@@ -1,4 +1,29 @@
-# Class that manages ESX iSCSI targets via powercli
+# @summary Resource that manages ESX iSCSI targets
+#
+# @param array_info
+#   Hash of array info that contains;
+#   - iSCSI Target IP address
+#   - discovery type of target (static or dynamic) this is determined by the vendor of the target.
+#   - The IQN of the target. Example: iqn.2010-06.com.storagevendor:arraytype.xxxxxxxxxxxxx
+#   - Chap username (if required for the target)
+#   - Chap password (if required for the target)
+# @param defaults
+#   Hash of default values used to configure iSCSI which contains;
+#   - iSCSI target port (3260)
+#
+# @example Basic usage
+#   powercli::esx::iscsi_targets {'my-vmware-host.fqdn.tld':
+#     array_info => {
+#       my-san01_target01 => {
+#         discovery => 'static',
+#         iscsi_name => 'iqn.2010-06.com.storagevendor:arraytype.xxxxxxxxxxxxx',
+#         targets => ['192.168.1.100','192.168.1.101','192.168.1.102','192.168.1.103']}
+#       my-san02_target01 => {
+#         discovery => 'dynamic',
+#         iscsi_name => 'iqn.2010-06.com.diffstoragevendor:arraytype.yyyyyyyyyyyyy',
+#         targets => ['192.168.1.200','192.168.1.201','192.168.1.202','192.168.1.203']}}
+#       defaults => {
+#         port => '3260' }
 define powercli::esx::iscsi_targets (
   $array_info,
   $defaults,
