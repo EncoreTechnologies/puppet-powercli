@@ -8,7 +8,7 @@
 # @example Basic usage
 #   powercli::esx::dns {'my-vmware-host.fqdn.tld':
 #     dns_servers => '192.168.1.10', '192.168.1.11',
-#     domain => 'foo.domain.com'
+#     domain      => 'foo.domain.com'
 #   }
 define powercli::esx::dns (
   $dns_servers,
