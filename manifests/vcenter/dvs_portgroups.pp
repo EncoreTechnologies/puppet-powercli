@@ -11,7 +11,8 @@
 #     dvswitch => 'my_dvswitch_name_here',
 #     $dvs_pgs => {
 #       'vlan_10_portgroup_name_here' => 10,
-#       'vlan_11_portgroup_name_here' => 11 }
+#       'vlan_11_portgroup_name_here' => 11,
+#     },  
 #   }
 define powercli::vcenter::dvs_portgroups (
   $dvswitch,
