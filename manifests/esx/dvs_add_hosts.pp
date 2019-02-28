@@ -29,10 +29,9 @@
 #     'my_svswitch_name_here' => {
 #       'type' => standard,
 #       'nics' => [ 'vmnic2', 'vmnic3']}
-#     }
-#     overrides => (null. no overrides for this host, it uses defaults)
+#     },
 #   }
-# @example Basic usage - Using Override NICs on host. This will attach vmnic2 & 3 to the dvs.
+# @example Override usage - Using Override NICs on host. This will attach vmnic2 & 3 to the dvs.
 #   powercli::esx::dvs_add_hosts {'my-special-vmware-host.fqdn.tld':
 #     dvswitch_name => 'my_dvswitch_name_here',
 #     dvswitch_nic_defaults => {
