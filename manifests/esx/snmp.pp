@@ -13,11 +13,11 @@
 #
 # @example Basic usage
 #   powercli::esx::snmp {'my-vmware-host.fqdn.tld':
-#     username => 'root',
-#     password => 'this_should_be_encrypted',
+#     username  => 'root',
+#     password  => 'this_should_be_encrypted',
 #     community => 'my_community_name_should_be_encrypted_too',
-#     port => 161,
-#     targets => ['192.168.1.10', '192.168.1.11']
+#     port      => 161,
+#     targets   => ['192.168.1.10', '192.168.1.11']
 #   }
 define powercli::esx::snmp (
   $username,

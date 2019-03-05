@@ -9,7 +9,7 @@
 #
 # @example Basic usage
 #   powercli::esx::join_vcenter {'my-vmware-host.fqdn.tld':
-#     host_user => 'root'
+#     host_user     => 'root'
 #     host_password => 'this_should_be_encrypted'
 #     host_location => 'my_vmware_datacenter_name'
 #   }

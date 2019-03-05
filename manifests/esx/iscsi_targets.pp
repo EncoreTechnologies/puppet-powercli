@@ -15,15 +15,17 @@
 #   powercli::esx::iscsi_targets {'my-vmware-host.fqdn.tld':
 #     array_info => {
 #       my-san01_target01 => {
-#         discovery => 'static',
+#         discovery  => 'static',
 #         iscsi_name => 'iqn.2010-06.com.storagevendor:arraytype.xxxxxxxxxxxxx',
-#         targets => ['192.168.1.100','192.168.1.101','192.168.1.102','192.168.1.103']}
+#         targets    => ['192.168.1.100','192.168.1.101','192.168.1.102','192.168.1.103']}
 #       my-san02_target01 => {
-#         discovery => 'dynamic',
+#         discovery  => 'dynamic',
 #         iscsi_name => 'iqn.2010-06.com.diffstoragevendor:arraytype.yyyyyyyyyyyyy',
-#         targets => ['192.168.1.200','192.168.1.201','192.168.1.202','192.168.1.203']}}
-#       defaults => {
-#         port => '3260' }
+#         targets    => ['192.168.1.200','192.168.1.201','192.168.1.202','192.168.1.203']}}
+#       defaults          => {
+#         port => '3260' },
+#     },
+#   }
 define powercli::esx::iscsi_targets (
   $array_info,
   $defaults,

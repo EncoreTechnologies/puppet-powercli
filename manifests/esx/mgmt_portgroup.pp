@@ -19,13 +19,13 @@
 #           management => {
 #             ip => 192.168.2.10
 #           },
-#           vmotion => {
+#           vmotion    => {
 #             ip => 192.168.3.10
 #           },
-#           iscsi_a => {
+#           iscsi_a    => {
 #             ip => 192.168.10.10
 #           },
-#           iscsi_b => {
+#           iscsi_b    => {
 #             ip => 192.168.11.10
 #           },
 #         },
@@ -35,13 +35,13 @@
 #           management => {
 #             ip => 192.168.2.11
 #           },
-#           vmotion => {
+#           vmotion    => {
 #             ip => 192.168.3.11
 #           },
-#           iscsi_a => {
+#           iscsi_a    => {
 #             ip => 192.168.10.11
 #           },
-#           iscsi_b => {
+#           iscsi_b    => {
 #             ip => 192.168.11.11
 #           },
 #         },
@@ -50,9 +50,9 @@
 #     defaults => {
 #       management: {
 #         portgroup => 'management-portgroup-name',
-#         subnet => 255.255.255.0,
-#         mtu => 9000,
-#         switch => 'name-of-dvswitch-management-portgroup-lives-on'
+#         subnet    => 255.255.255.0,
+#         mtu       => 9000,
+#         switch    => 'name-of-dvswitch-management-portgroup-lives-on'
 #       },
 #     },
 #   }

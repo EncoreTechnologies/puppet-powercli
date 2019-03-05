@@ -9,8 +9,8 @@
 #
 # @example Basic usage
 #   powercli::esx::syslog {'my-vmware-host.fqdn.tld':
-#     syslog_server => 192.168.1.10,
-#     syslog_port => 514,
+#     syslog_server   => 192.168.1.10,
+#     syslog_port     => 514,
 #     syslog_protocol => udp
 #   }
 define powercli::esx::syslog (
