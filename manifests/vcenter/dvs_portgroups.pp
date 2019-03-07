@@ -1,4 +1,19 @@
 # Class that manages DvSwitch Portgroups
+# @summary Manages distributed virtual switch (dvswitch or dvs for short) portgroups.
+#
+# @param dvswitch
+#   Name of the dvswitch we will add portgroups on.
+# @param dvs_pgs
+#   Hash of portgroup and VLAN IDs.
+#
+# @example Basic usage
+#   powercli::vcenter::dvs_portgroups {'my-vcenter.fqdn.tld':
+#     dvswitch => 'my_dvswitch_name_here',
+#     $dvs_pgs => {
+#       'vlan_10_portgroup_name_here' => 10,
+#       'vlan_11_portgroup_name_here' => 11,
+#     },  
+#   }
 define powercli::vcenter::dvs_portgroups (
   $dvswitch,
   $dvs_pgs,
