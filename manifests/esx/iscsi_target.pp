@@ -13,7 +13,7 @@ define powercli::esx::iscsi_target (
   if ($discovery == 'dynamic') or ($discovery == 'static') {
     $targets.each | $target | {
         exec { "${name}: Add ${array} iSCSI target: ${target} ${chap_str} with ${discovery} discovery":
-        command  => #template('powercli/powercli_esx_iscsi_targets.ps1.erb'),
+        command  => template('powercli/powercli_esx_iscsi_targets.ps1.erb'),
         provider => 'powershell',
         onlyif   => template('powercli/powercli_esx_iscsi_targets_onlyif.ps1.erb'),
         # Tag this resource so we can reference later for rescans
