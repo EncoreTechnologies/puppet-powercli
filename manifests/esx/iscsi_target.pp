@@ -12,7 +12,7 @@ define powercli::esx::iscsi_target (
   # Filtering out any target without a discovery type OR a discovery type different than known types
   if ($discovery == 'dynamic') or ($discovery == 'static') {
     $targets.each | $target | {
-+        exec { "${name}: Add ${array} iSCSI target: ${target} ${chap_str} with ${discovery} discovery":
+        exec { "${name}: Add ${array} iSCSI target: ${target} ${chap_str} with ${discovery} discovery":
         command  => #template('powercli/powercli_esx_iscsi_targets.ps1.erb'),
         provider => 'powershell',
         onlyif   => template('powercli/powercli_esx_iscsi_targets_onlyif.ps1.erb'),
