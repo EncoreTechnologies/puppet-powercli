@@ -1,7 +1,7 @@
 # Connect to vcenter
 <%= @_connect %>
 
-$PortgroupCheck = Get-VDSwitch -name '<%= @dvswitch %>' | Get-VDPortgroup -name <%= @pg_name %>
+$PortgroupCheck = Get-VDSwitch -name '<%= @dvswitch %>' | Get-VDPortgroup -name <%= @name %>
 
 # If we located the portgroup
 if($PortgroupCheck){
