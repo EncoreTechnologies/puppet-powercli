@@ -14,7 +14,7 @@ define powercli::esx::iscsi_target (
   #Filtering out any target without a discovery type OR a discovery type different than known types
   if ($discovery == 'dynamic') or ($discovery == 'static') {
     $targets.each | $target | {
-        exec { "${hostname} add target: ${target}":
+        exec { "${hostname} target: ${target}":
         command  => template('powercli/powercli_esx_iscsi_targets.ps1.erb'),
         provider => 'powershell',
         onlyif   => template('powercli/powercli_esx_iscsi_targets_onlyif.ps1.erb'),
@@ -29,11 +29,13 @@ define powercli::esx::iscsi_target (
           + "Known discovery types are: 'static' or 'dynamic'.")
   }
 
-  # # Calls the rescan resource but it does not run because the exec within the rescan resource is `refreshonly`
-  # powercli::esx::iscsi_rescan { $name: }
+  # Calls the rescan resource but it does not run because the exec within the rescan resource is `refreshonly`
+  powercli::esx::iscsi_rescan { $name:
+    hostname => $hostname
+  }
 
-  # # Aggregates all change events of iSCSI targets being added to the hosts,
-  # # if any targets were added to a host, that host will be rescanned a single time.
-  # Exec<| tag == "powercli::esx::iscsi_targets_${name}" |>
-  # ~> Powercli::Esx::Iscsi_rescan[$name]
+  # Aggregates all change events of iSCSI targets being added to the hosts,
+  # if any targets were added to a host, that host will be rescanned a single time.
+  Exec<| tag == "powercli::esx::iscsi_targets_${name}" |>
+  ~> Powercli::Esx::Iscsi_rescan[$name]
 }
