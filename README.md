@@ -1,11 +1,10 @@
-# powercli
+# Puppet-PowerCLI
 
 #### Table of Contents
 
 1. [Description](#description)
 2. [Setup - The basics of getting started with powercli](#setup)
-    * [What powercli affects](#what-powercli-affects)
-    * [Setup requirements](#setup-requirements)
+    * [Setup requirements](#requirements)
     * [Beginning with powercli](#beginning-with-powercli)
 3. [Usage - Configuration options and additional functionality](#usage)
 4. [Limitations - OS compatibility, etc.](#limitations)
