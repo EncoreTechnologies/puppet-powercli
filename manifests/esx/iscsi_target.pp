@@ -1,3 +1,45 @@
+# @summary Resource that manages ESX iSCSI targets
+#
+# @param hostname
+#   Hostname of the ESX host we are checking / ensuring targets on
+# @param discovery
+#   - Currently accepted discovery types are 'static' and 'dynamic'
+#   - Discovery type of the array that holds the targets.
+#     Determined by array manufacturer.
+# @param targets
+#   Array of iscsi target IP addresses
+# @param port
+#   TCP/IP port of the iscsi target (default 3260)
+# @param iscsi_name
+#   Required for targets that have discovery type of 'static'.
+#   iSCSI IQN of the target. Example: iqn.2010-06.com.storagevendor:arraytype.xxxxxxxxxxxxx
+# @param chap_user
+#   Optional CHAP Parameter - Chap Username for target
+# @param chap_pass
+#   Optional CHAP Parameter - Chap Password for target
+# @param san_name
+#   Optional Parameter. Name of SAN that has targets added.
+#
+# @example dynamic target, with chap example:
+# powercli::esx::iscsi_target { :
+#   hostname => 'my-vmware-host.fqdn.tld',
+#   discovery => 'dynamic',
+#   targets => ['192.168.1.100', '192.168.1.101']
+#   port => 3260
+#   chap_user => 'my_chap_username'
+#   chap_pass => 'my_chap_password_should_be_encrypted'
+#   san_name => 'mysan01.fqdn.tld'
+# }
+#
+# @example static target, no chap example:
+# powercli::esx::iscsi_target { :
+#   hostname => 'my-vmware-host.fqdn.tld',
+#   discovery => 'static',
+#   targets => ['192.168.1.200', '192.168.1.201']
+#   port => 3260
+#   san_name => 'mysan01.fqdn.tld',
+#   iscsi_name => 'iqn.2010-06.com.storagevendor:arraytype.xxxxxxxxxxxxx'  
+# }
 define powercli::esx::iscsi_target (
   $hostname,
   $discovery,
@@ -19,7 +61,7 @@ define powercli::esx::iscsi_target (
         provider => 'powershell',
         onlyif   => template('powercli/powercli_esx_iscsi_targets_onlyif.ps1.erb'),
         # Tag this resource so we can reference later for rescans
-        tag      => "powercli::esx::iscsi_targets_${name}",
+        tag      => "powercli::esx::iscsi_targets_${hostname}",
       }
     }
   }
@@ -28,14 +70,4 @@ define powercli::esx::iscsi_target (
           + 'This does not match known discovery types. '
           + "Known discovery types are: 'static' or 'dynamic'.")
   }
-
-  # Calls the rescan resource but it does not run because the exec within the rescan resource is `refreshonly`
-  powercli::esx::iscsi_rescan { $name:
-    hostname => $hostname
-  }
-
-  # Aggregates all change events of iSCSI targets being added to the hosts,
-  # if any targets were added to a host, that host will be rescanned a single time.
-  Exec<| tag == "powercli::esx::iscsi_targets_${name}" |>
-  ~> Powercli::Esx::Iscsi_rescan[$name]
 }
