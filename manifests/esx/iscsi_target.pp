@@ -42,7 +42,8 @@
 # }
 define powercli::esx::iscsi_target (
   $hostname,
-  $discovery,
+  # Only allow discovery types 'dynamic' and 'static', otherwise puppet fails to compile
+  Enum['dynamic', 'static'] $discovery,
   $targets,
   $port,
   Optional[String] $chap_user = undef,
@@ -53,21 +54,13 @@ define powercli::esx::iscsi_target (
   include powercli::vcenter::connection
   $_connect = $powercli::vcenter::connection::connect
 
-  #Filtering out any target without a discovery type OR a discovery type different than known types
-  if ($discovery == 'dynamic') or ($discovery == 'static') {
-    $targets.each | $target | {
-        exec { "${hostname} target: ${target}":
-        command  => template('powercli/powercli_esx_iscsi_targets.ps1.erb'),
-        provider => 'powershell',
-        onlyif   => template('powercli/powercli_esx_iscsi_targets_onlyif.ps1.erb'),
-        # Tag this resource so we can reference later for rescans
-        tag      => "powercli::esx::iscsi_targets_${hostname}",
-      }
+  $targets.each | $target | {
+      exec { "${hostname} target: ${target}":
+      command  => template('powercli/powercli_esx_iscsi_targets.ps1.erb'),
+      provider => 'powershell',
+      onlyif   => template('powercli/powercli_esx_iscsi_targets_onlyif.ps1.erb'),
+      # Tag this resource so we can reference later for rescans
+      tag      => "powercli::esx::iscsi_targets_${hostname}",
     }
-  }
-  else{
-    fail("iSCSI Array: ${san_name} has discovery type of: (${discovery})."
-          + 'This does not match known discovery types. '
-          + "Known discovery types are: 'static' or 'dynamic'.")
   }
 }
