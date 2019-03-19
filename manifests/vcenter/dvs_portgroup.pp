@@ -1,3 +1,15 @@
+# @summary Resource that manages distributed virtual switch (dvs) portgroups
+#
+# @param dvswitch
+#  Name of the dvs we wish to create portgroups on
+# @param vlan
+#   VLAN ID of the portgroup we wish to create
+#
+# @example Basic usage
+#   powercli::vcenter::dvs_portgroup { 'vlan_10_portgroup_name':
+#     dvswitch => 'dvswitch0',
+#     vlan     => 10
+#   }
 define powercli::vcenter::dvs_portgroup (
   $dvswitch,
   $vlan,
