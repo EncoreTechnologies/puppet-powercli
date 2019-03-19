@@ -22,23 +22,23 @@
 #
 # @example dynamic target, with chap example:
 # powercli::esx::iscsi_target { :
-#   hostname => 'my-vmware-host.fqdn.tld',
+#   hostname  => 'my-vmware-host.fqdn.tld',
 #   discovery => 'dynamic',
-#   targets => ['192.168.1.100', '192.168.1.101']
-#   port => 3260
-#   chap_user => 'my_chap_username'
-#   chap_pass => 'my_chap_password_should_be_encrypted'
-#   san_name => 'mysan01.fqdn.tld'
+#   targets   => ['192.168.1.100', '192.168.1.101'],
+#   port      => 3260,
+#   chap_user => 'my_chap_username',
+#   chap_pass => 'my_chap_password_should_be_encrypted',
+#   san_name  => 'mysan01.fqdn.tld',
 # }
 #
 # @example static target, no chap example:
 # powercli::esx::iscsi_target { :
-#   hostname => 'my-vmware-host.fqdn.tld',
-#   discovery => 'static',
-#   targets => ['192.168.1.200', '192.168.1.201']
-#   port => 3260
-#   san_name => 'mysan01.fqdn.tld',
-#   iscsi_name => 'iqn.2010-06.com.storagevendor:arraytype.xxxxxxxxxxxxx'  
+#   hostname   => 'my-vmware-host.fqdn.tld',
+#   discovery  => 'static',
+#   targets    => ['192.168.1.200', '192.168.1.201'],
+#   port       => 3260,
+#   san_name   => 'mysan01.fqdn.tld',
+#   iscsi_name => 'iqn.2010-06.com.storagevendor:arraytype.xxxxxxxxxxxxx',
 # }
 define powercli::esx::iscsi_target (
   $hostname,
@@ -52,7 +52,7 @@ define powercli::esx::iscsi_target (
 ) {
   include powercli::vcenter::connection
   $_connect = $powercli::vcenter::connection::connect
-  
+
   #Filtering out any target without a discovery type OR a discovery type different than known types
   if ($discovery == 'dynamic') or ($discovery == 'static') {
     $targets.each | $target | {

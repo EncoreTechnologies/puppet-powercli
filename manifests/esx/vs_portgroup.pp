@@ -24,7 +24,7 @@ define powercli::esx::vs_portgroup (
 ) {
   include powercli::vcenter::connection
   $_connect = $powercli::vcenter::connection::connect
-  
+
   $_cmd = "Get-VirtualSwitch -Standard -VMhost ${hostname} -Name ${vswitch_name} | New-VirtualPortgroup -Name ${portgroup} -VLanID ${vlan}"
 
   exec { "Create Portgroup ${portgroup} on host ${hostname}":
