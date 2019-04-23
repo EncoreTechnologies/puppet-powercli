@@ -16,13 +16,14 @@
 define powercli::vcenter::nfs_datastore (
   $server,
   $nfs_name,
-  $path
+  $path,
+  $version = '4.1'
 ) {
   include powercli::vcenter::connection
   $_connect = $powercli::vcenter::connection::connect
 
   exec { "${name}: Create NFS datastore ${nfs_name}":
-    command  => "${_connect}; New-Datastore -VMHost '${name}' -Nfs -Name '${nfs_name}' -Path '${path}' -NFSHost '${server}'",
+    command  => "${_connect}; New-Datastore -VMHost '${name}' -Nfs -Name '${nfs_name}' -Path '${path}' -NFSHost '${server}' -FileSystemVersion ${version}",
     provider => 'powershell',
     onlyif   => template('powercli/powercli_esx_nfs_datastore_onlyif.ps1.erb'),
   }
