@@ -17,7 +17,7 @@ define powercli::vcenter::nfs_datastore (
   $server,
   $nfs_name,
   $path,
-  $version
+  $version = '4.1'
 ) {
   include powercli::vcenter::connection
   $_connect = $powercli::vcenter::connection::connect
