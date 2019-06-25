@@ -1,4 +1,12 @@
 # @summary Resource that manages ESX NTP via PowerCLI
+#
+# @param ntp_servers
+#   A array of ntp servers to be used as time sources for the ESX host
+#
+# @example Basic usage
+#   powercli::esx::ntp { 'my-vmware-host.fqdn.tld' :
+#     ntp_servers => ['192.168.1.10', '192.168.1.11']
+#   }
 define powercli::esx::ntp (
   $ntp_servers,
 ) {

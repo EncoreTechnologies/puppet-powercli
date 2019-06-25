@@ -1,4 +1,7 @@
-# Class that manages storage HBA rescans on ESX hosts
+# @summary Resource that manages storage HBA rescans on ESX hosts
+#
+# @example Basic usage
+# powercli::esx::iscsi_rescan {'my-vmware-host.fqdn.tld': }
 define powercli::esx::iscsi_rescan (
 ) {
   include powercli::vcenter::connection

@@ -1,4 +1,12 @@
 # @summary Resource that applies licenses to ESX an host
+#
+# @param key
+#   The license key for the ESX host(s)
+#
+# @example Basic usage
+#   powercli::esx::license {'my-vmware-host.fqdn.tld':
+#     key => 'XXXXX-XXXXX-XXXXX-XXXXX-XXXXX'
+#   }
 define powercli::esx::license (
   $key,
 ) {

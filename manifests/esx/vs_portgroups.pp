@@ -1,4 +1,22 @@
 # @summary Resource that manages ESX vSwitch Portgroups
+#
+# @param vswitch
+#   Name of the standard vswitch we wish to create portgroups on
+# @param vs_pgs
+#   Hash of Portgroup names and VLAN IDs
+#
+# @example Basic usage
+#   powercli::esx::vs_portgroups {'my-vmware-host.fqdn.tld':
+#     vswitch => 'my_standard_vswitch_name'
+#     vs_pgs  => {
+#       'vlan_10_portgroup_name_here' => {
+#         vlan => 10
+#       },
+#       'vlan_11_portgroup_name_here' => {
+#         vlan => 11
+#       },
+#     },
+#   }
 define powercli::esx::vs_portgroups (
   $vswitch,
   $vs_pgs,
