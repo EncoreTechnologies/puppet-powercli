@@ -1,11 +1,10 @@
-# powercli
+# Puppet-PowerCLI
 
 #### Table of Contents
 
 1. [Description](#description)
 2. [Setup - The basics of getting started with powercli](#setup)
-    * [What powercli affects](#what-powercli-affects)
-    * [Setup requirements](#setup-requirements)
+    * [Setup requirements](#requirements)
     * [Beginning with powercli](#beginning-with-powercli)
 3. [Usage - Configuration options and additional functionality](#usage)
 4. [Limitations - OS compatibility, etc.](#limitations)
@@ -30,60 +29,72 @@ with Puppet resources.
 
 ## Setup
 
-### What powercli affects **OPTIONAL**
+### Requirements
 
-If it's obvious what your module touches, you can skip this section. For example, folks can probably figure out that your mysql_instance module affects their MySQL instances.
+- This module requires PowerShell (Core) 6 to be installed on the PowerCLI Proxy. Windows Server 2016 is highly recommended
+to avoid Windows Server 2012r2 PowerShell heartaches.
+- `powershell.exe` must be available in the system PATH
 
-If there's more that they should know about, though, this is the place to mention:
+### Beginning with PowerCLI
 
-* Files, packages, services, or operations that the module will alter, impact, or execute.
-* Dependencies that your module automatically installs.
-* Warnings or other important notices.
+[VMware PowerCLI](https://www.vmware.com/support/developer/PowerCLI/) is a command-line scripting tool built on PowerShell to manage VMWare environments.
+This `puppet-powercli` module uses the [PowerShell Provider](https://forge.puppet.com/puppetlabs/powershell) to run PowerCLI commands within Puppet `exec` blocks.
 
-### Setup Requirements **OPTIONAL**
-
-If your module requires anything extra before setting up (pluginsync enabled, another module, etc.), mention it here.
-
-If your most recent release breaks compatibility or requires particular steps for upgrading, you might want to include an additional "Upgrading" section here.
-
-### Beginning with powercli
-
-The very basic steps needed for a user to get the module up and running. This can include setup steps, if necessary, or it can be an example of the most basic use of the module.
+The latest version of PowerCLI is installed onto the PowerCLI proxy at the beginning of every puppet agent run via the `powercli` class within `init.pp` in this module.
 
 ## Usage
 
-Include usage examples for common use cases in the **Usage** section. Show your users how to use your module to solve problems, and be sure to include code examples. Include three to five examples of the most important or common tasks a user can accomplish with your module. Show users how to accomplish more complex tasks that involve different types, classes, and functions working in tandem.
+This basic resource example will install a license key onto an ESXi host.
 
-## Reference
-
-This section is deprecated. Instead, add reference information to your code as Puppet Strings comments, and then use Strings to generate a REFERENCE.md in your module. For details on how to add code comments and generate documentation with Strings, see the Puppet Strings [documentation](https://puppet.com/docs/puppet/latest/puppet_strings.html) and [style guide](https://puppet.com/docs/puppet/latest/puppet_strings_style.html)
-
-If you aren't ready to use Strings yet, manually create a REFERENCE.md in the root of your module directory and list out each of your module's classes, defined types, facts, functions, Puppet tasks, task plans, and resource types and providers, along with the parameters for each.
-
-For each element (class, defined type, function, and so on), list:
-
-  * The data type, if applicable.
-  * A description of what the element does.
-  * Valid values, if the data type doesn't make it obvious.
-  * Default value, if any.
-
-For example:
-
+You run:
+``` puppet
+powercli::esx::license {'my-vmware-host.fqdn.tld':
+  key => 'XXXXX-XXXXX-XXXXX-XXXXX-XXXXX'
+}
 ```
-### `pet::cat`
 
-#### Parameters
+Resource: 
+```
+  $key,
+) {
+  # including our vcenter connection class
+  include powercli::vcenter::connection
+  # $_connect = "Connect-VIServer"
+  $_connect = $powercli::vcenter::connection::connect
 
-##### `meow`
+  exec { "License host - ${name}:":
+    # Install license
+    command  => "${_connect}; Get-VMHost -Name '${name}' | Set-VMHost -LicenseKey ${key}",
+    # Use PowerShell to run the above command
+    provider => 'powershell',
+    # Only run the above command if the below 'onlyif' returns '0' 
+    onlyif   => template('powercli/powercli_esx_license_hosts_onlyif.ps1.erb'),
+  }
+}
+```
 
-Enables vocalization in your cat. Valid options: 'string'.
+OnlyIf template "powercli/powercli_esx_license_hosts_onlyif.ps1.erb":
+``` puppet
+# Connect to vcenter
+<%= @_connect %>
 
-Default: 'medium-loud'.
+# Grab the currently installed license key
+$KeyCheck = Get-VMHost -Name '<%= @name %>' | Select-Object -ExpandProperty LicenseKey 
+
+# Host was located in vcenter and license matches the key we want installed, exit 1 so puppet skips host
+if($KeyCheck -eq '<%= @key %>'){
+    exit 1
+}
+# If the keys didn't match...
+else{
+   # Exit 0 so puppet installs license on current host
+   exit 0
+}
 ```
 
 ## Limitations
 
-In the Limitations section, list any incompatibilities, known issues, or other warnings.
+- TBD
 
 ## Development
 

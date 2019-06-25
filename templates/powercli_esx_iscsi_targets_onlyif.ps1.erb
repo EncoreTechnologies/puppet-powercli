@@ -4,12 +4,12 @@
 $Discovery = '<%= @discovery %>'
 
 $TargetIP = '<%= @target %>'
-$TargetPort = '<%= @default_port %>'
+$TargetPort = '<%= @port %>'
 
 # Appending the port to the target IP. 
 $Target = $TargetIP + ':' + $TargetPort
 
-$HBA = Get-VMHost -Name '<%= @name %>'  | Get-VMHostHba -Type IScsi | Where {$_.Model -eq "iSCSI Software Adapter"}
+$HBA = Get-VMHost -Name '<%= @hostname %>'  | Get-VMHostHba -Type IScsi | Where {$_.Model -eq "iSCSI Software Adapter"}
 
 # If the discovery type for the current target is static...
 if($Discovery -eq 'static'){
