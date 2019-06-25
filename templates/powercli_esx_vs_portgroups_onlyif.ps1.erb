@@ -2,7 +2,7 @@
 <%= @_connect %>
 
 # Checking to see if the portgroup exists
-$PortGroupCheck = Get-VirtualSwitch -Standard -VMhost '<%= @name %>' -Name '<%= @vswitch %>' | Get-VirtualPortgroup -Name '<%= @pg_name %>'
+$PortGroupCheck = Get-VirtualSwitch -Standard -VMhost '<%= @hostname %>' -Name '<%= @vswitch_name %>' | Get-VirtualPortgroup -Name '<%= @portgroup %>'
 
 # If the portgroup was located..
 if($PortGroupCheck){
