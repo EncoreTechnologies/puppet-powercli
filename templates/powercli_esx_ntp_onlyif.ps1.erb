@@ -18,15 +18,9 @@ foreach($s in $NTPServersArray){
     # This is to remove the space that starts ' 192.168.1.11'
     $s = $s.Trim(" ")
 
-    # If the host had no NTP servers set, we cannot check if it 'contains' the NTP servers
-    # we want. This loop causes puppet to run if the host had NO NTP servers set.
-    if(!$NTPServersCheck){
-        exit 0
-    }
-
-    # If the NTP server we wanted ISN'T in the $NTPServersCheck array,
-    # queue puppet to set NTP servers
-    if(!$NTPServersCheck.Contains($s)){ 
+    # If the host had no NTP servers set, or if the NTP server we wanted ISN'T in
+    # the $NTPServersCheck array, queue puppet to set NTP servers
+    if(!$NTPServersCheck -or !$NTPServersCheck.Contains($s)){ 
         exit 0
     }
 }
