@@ -17,9 +17,10 @@ foreach($s in $NTPServersArray){
     # Trim the whitespace from the current $s.
     # This is to remove the space that starts ' 192.168.1.11'
     $s = $s.Trim(" ")
-    
-    # If the NTP server we wanted ISN'T in the $NTPServersCheck array, queue puppet to set NTP servers
-    if(!$NTPServersCheck.Contains($s)){ 
+
+    # If the host had no NTP servers set, or if the NTP server we wanted ISN'T in
+    # the $NTPServersCheck array, queue puppet to set NTP servers
+    if(!$NTPServersCheck -or !$NTPServersCheck.Contains($s)){ 
         exit 0
     }
 }
