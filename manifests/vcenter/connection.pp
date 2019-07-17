@@ -7,12 +7,15 @@
 #   Username to use for vCenter authentication
 # @param password
 #   Password to use for vCenter authentication
+# @param insecure
+#   Without this, powercli will be unable to connect to a vcenter without a valid cert.
 #
 # @example Basic usage
 #   class { 'powercli::vcenter::connection':
 #     server   => 'vcenter.domain.tld',
 #     username => 'user@domain.tld',
 #     password => 'PassWord!',
+#     insecure => 'true',  
 #   }
 class powercli::vcenter::connection (
   String $server,
