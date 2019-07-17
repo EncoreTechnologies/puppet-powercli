@@ -58,6 +58,7 @@ class powercli (
       server   => $vcenter_connection['server'],
       username => $vcenter_connection['username'],
       password => $vcenter_connection['password'],
+      insecure => $vcenter_connection['insecure'],
     }
     contain powercli::vcenter::connection
   }
