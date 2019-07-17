@@ -24,7 +24,7 @@ class powercli::vcenter::connection (
   $connect = "Connect-VIServer -Server '${server}' -Username '${username}' -Password '${password}'"
 
   if $insecure = "true" {
-    $connect = $connect + " -Force"
+    #$connect = $connect + " -Force"
   }
 
 }
