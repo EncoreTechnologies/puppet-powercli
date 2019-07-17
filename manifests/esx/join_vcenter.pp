@@ -22,7 +22,12 @@ define powercli::esx::join_vcenter (
   $_connect = $powercli::vcenter::connection::connect
 $_cmd = "Add-VMHost -Name '${name}' -User '${host_user}' -Password '${host_password}' -Location '${host_location}' -Force"
 
-  notify{"TEST: ${name} || ${_connect}" : }
+  $test = template('powercli/powercli_esx_join_hosts_to_vcenter_onlyif.ps1.erb')
+
+  notify{"TEST: ${name} || ${test}" : }
+
+
+
 
   exec { "Join host to cluster - ${name}:":
     command  => "${_connect}; ${_cmd}",
