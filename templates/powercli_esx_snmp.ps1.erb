@@ -3,7 +3,9 @@ Connect-VIServer '<%= @name %>' -User '<%= @username %>' -Password '<%= @passwor
 
 $HostSNMP = Get-VMHostSNMP
 
-# If you need a way to clear the hosts previous snmp targets
-# Set-VMHostSnmp -HostSnmp $test -ReadOnlyCommunity @()
+# If you need a way to clear the hosts previous snmp targets run the following commands:
+# Connect-VIServer esxihost01.domain.tld -User root -Password mypassword
+# $HostSNMP = Get-VMHostSNMP
+# Set-VMHostSnmp -HostSnmp $HostSNMP -ReadOnlyCommunity @()
 
 Set-VMHostSnmp $HostSNMP -Enabled:$true -ReadOnlyCommunity '<%= @community %>' -TargetCommunity '<%= @community %>' -TargetPort '<%= @port %>' -TargetHost '<%= @target %>' -AddTarget
