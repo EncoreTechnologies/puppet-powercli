@@ -4,6 +4,6 @@ Connect-VIServer '<%= @name %>' -User '<%= @username %>' -Password '<%= @passwor
 $HostSNMP = Get-VMHostSNMP
 
 # If you need a way to clear the hosts previous snmp targets
-# Set-VMHostSnmp -HostSnmp $test -ReadOnlyCommunity @()
+# Set-VMHostSnmp -HostSnmp $HostSNMP -ReadOnlyCommunity @()
 
 Set-VMHostSnmp $HostSNMP -Enabled:$true -ReadOnlyCommunity '<%= @community %>' -TargetCommunity '<%= @community %>' -TargetPort '<%= @port %>' -TargetHost '<%= @target %>' -AddTarget
