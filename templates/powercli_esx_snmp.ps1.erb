@@ -8,4 +8,7 @@ $HostSNMP = Get-VMHostSNMP
 # $HostSNMP = Get-VMHostSNMP
 # Set-VMHostSnmp -HostSnmp $HostSNMP -ReadOnlyCommunity @()
 
+# Clear ALL SNMP targets off the host
+Set-VMHostSnmp -HostSnmp $HostSNMP -ReadOnlyCommunity @()
+
 Set-VMHostSnmp $HostSNMP -Enabled:$true -ReadOnlyCommunity '<%= @community %>' -TargetCommunity '<%= @community %>' -TargetPort '<%= @port %>' -TargetHost '<%= @target %>' -AddTarget
