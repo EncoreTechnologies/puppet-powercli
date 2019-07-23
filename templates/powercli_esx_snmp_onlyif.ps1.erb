@@ -7,21 +7,39 @@ if(($SNMPCheck.Enabled) -ne 'True'){
      exit 0
 }
 
-if(($SNMPCheck.Port) -ne '<%= @port %>'){
-     exit 0
-}
+# Array of all trap targets 
+$TargetsHashtable = @{}
 
+# Building a dict of current trap targets on the host - we'll use this to compare
 foreach($t in ($SNMPCheck.TrapTargets)){
-    
-    if(($t.HostName) -ne '<%= @target %>'){
-         exit 0
-    }
-    if(($t.Community) -ne '<%= @community %>'){
-         exit 0
-    }
-    if(($t.Port) -ne '<%= @port %>'){
-         exit 0
-    }
+     $TargetObject = new-object PSCustomObject
+     $TargetObject | add-member -membertype noteproperty -name Community -value $t.Community
+     $TargetObject | add-member -membertype noteproperty -name Port -value $t.Port
+
+     # Add this object to the tracking hashtable
+     $TargetsHashtable.Add($t.HostName, $TargetObject)
 }
 
+# If the target we want on the host IS already there...
+if(($SNMPCheck.TrapTargets.HostName) -contains '<%= @target %>'){
+
+     # Select that target specifically from the hashtable
+     $TargetCheck = $TargetsHashtable['<%= @target %>']
+
+     # If the target on the host has a DIFFERENT port than what we want...
+     if(($TargetCheck.Port) -ne '<%= @port %>'){
+         exit 0
+     }
+
+     # If the target on the host has a DIFFERENT community than we want...
+     if(($TargetCheck.Community) -ne '<%= @community %>'){
+         exit 0
+     }
+}
+# If the target we want on the host is NOT there...
+else{
+    exit 0
+}
+
+# If we found no problems with SNMP targets
 exit 1
