@@ -27,7 +27,7 @@ define powercli::esx::snmp (
   $targets,
 )
 {
-  exec { "${name} Set SNMP target ${targets}":
+  exec { "${name} Set SNMP targets ${targets}":
     command  => template('powercli/powercli_esx_snmp.ps1.erb'),
     provider => 'powershell',
     onlyif   => template('powercli/powercli_esx_snmp_onlyif.ps1.erb'),
