@@ -7,10 +7,10 @@ if(($SNMPCheck.Enabled) -ne 'True'){
      exit 0
 }
 
-# Array of all trap targets 
+# Hashtable of all trap targets on the host currently
 $TargetsHashtable = @{}
 
-# Building a dict of current trap targets on the host - we'll use this to compare
+# Building a hashtable of current trap targets on the host
 foreach($t in ($SNMPCheck.TrapTargets)){
      $TargetObject = new-object PSCustomObject
      $TargetObject | add-member -membertype noteproperty -name Community -value $t.Community
@@ -20,26 +20,47 @@ foreach($t in ($SNMPCheck.TrapTargets)){
      $TargetsHashtable.Add($t.HostName, $TargetObject)
 }
 
-# If the target we want on the host IS already there...
-if(($SNMPCheck.TrapTargets.HostName) -contains '<%= @target %>'){
+# Hashtable of all trap targets we WANT on the host
+$RequestedTargetsHashtable = @{}
 
-     # Select that target specifically from the hashtable
-     $TargetCheck = $TargetsHashtable['<%= @target %>']
+# Building the hashtable of the trap targets we WANT on the host
+foreach($t in '<%= @targets %>'){
+     $TargetObject = new-object PSCustomObject
+     $TargetObject | add-member -membertype noteproperty -name Community -value '<%= @community %>'
+     $TargetObject | add-member -membertype noteproperty -name Port -value '<%= @port %>'
 
-     # If the target on the host has a DIFFERENT port than what we want...
-     if(($TargetCheck.Port) -ne '<%= @port %>'){
-         exit 0
-     }
-
-     # If the target on the host has a DIFFERENT community than we want...
-     if(($TargetCheck.Community) -ne '<%= @community %>'){
-         exit 0
-     }
+     # Add the TargetObject to the tracking hashtable
+     $RequestedTargetsHashtable.Add($t, $TargetObject)
 }
-# If the target we want on the host is NOT there...
-else{
-    exit 0
+
+if($RequestedTargetsHashtable -eq $TargetsHashtable){
+    exit 1
 }
+
+exit 0
+
+
+
+# # If the target we want on the host IS already there...
+# if(($SNMPCheck.TrapTargets.HostName) -contains '<%= @target %>'){
+
+#      # Select that target specifically from the hashtable
+#      $TargetCheck = $TargetsHashtable['<%= @target %>']
+
+#      # If the target on the host has a DIFFERENT port than what we want...
+#      if(($TargetCheck.Port) -ne '<%= @port %>'){
+#          exit 0
+#      }
+
+#      # If the target on the host has a DIFFERENT community than we want...
+#      if(($TargetCheck.Community) -ne '<%= @community %>'){
+#          exit 0
+#      }
+# }
+# # If the target we want on the host is NOT there...
+# else{
+#     exit 0
+# }
 
 # If we found no problems with SNMP targets
-exit 1
+# exit 1
