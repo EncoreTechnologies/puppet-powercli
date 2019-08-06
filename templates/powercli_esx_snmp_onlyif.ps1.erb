@@ -23,6 +23,11 @@ foreach($t in ($SNMPCheck.TrapTargets)){
 # Hashtable of all trap targets we WANT on the host
 $RequestedTargetsHashtable = @{}
 
+
+$test = '<%= @targets %>'
+
+
+
 # Building the hashtable of the trap targets we WANT on the host
 foreach($t in '<%= @targets %>'){
      $TargetObject = new-object PSCustomObject
