@@ -24,12 +24,12 @@ foreach($t in ($SNMPCheck.TrapTargets)){
 $RequestedTargetsHashtable = @{}
 
 
-$test = '<%= @targets %>'
+$test = <%= @targets %>
 
 
 
 # Building the hashtable of the trap targets we WANT on the host
-foreach($t in '<%= @targets %>'){
+foreach($t in <%= @targets %>){
      $TargetObject = new-object PSCustomObject
      $TargetObject | add-member -membertype noteproperty -name Community -value '<%= @community %>'
      $TargetObject | add-member -membertype noteproperty -name Port -value '<%= @port %>'
