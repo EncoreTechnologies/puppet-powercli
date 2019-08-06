@@ -34,7 +34,7 @@ foreach($t in $RequestedTargetsArray){
 }
 
 # Iterate each requested target...
-foreach($t in $RequestedTargetsHashtable){
+foreach($t in $RequestedTargetsHashtable.keys){
 
   # Grabbing the community for the current $t off the $RequestedTargetsHashtable
   # We do it this way because this does NOT work:
