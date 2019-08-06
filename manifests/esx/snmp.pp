@@ -38,8 +38,9 @@ define powercli::esx::snmp (
     subscribe => Exec["${name} Set SNMP targets ${targets}"],
   }
 
-  # $test = template('powercli/powercli_esx_snmp_onlyif.ps1.erb')
-  # notify {"${name} Targets: ${targets}" : }
-  # notify {"TEST: ${test}" : }
+  
+
+  $test = template('powercli/powercli_esx_snmp_onlyif.ps1.erb')
+  notify {"TEST: ${test}" : }
 
 }
