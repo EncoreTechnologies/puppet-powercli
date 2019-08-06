@@ -25,14 +25,18 @@ $RequestedTargetsHashtable = @{}
 
 
 
+# Create a comma seperated string that contains all SNMP targets defined in hiera
+$RequestedTargetsCsvString = '<%= @targets.join(",") %>'
 
-$test_join =<%= @targets.join(",") %>
+# Split the STRING on "," to turn it into a powershell array
+$RequestedTargetsArray = $$targets_csv_string.Split(",")
+
 
 
 
 
 # Building the hashtable of the trap targets we WANT on the host
-foreach($t in <%= @targets %>){
+foreach($t in $RequestedTargetsArray){
      $TargetObject = new-object PSCustomObject
      $TargetObject | add-member -membertype noteproperty -name Community -value '<%= @community %>'
      $TargetObject | add-member -membertype noteproperty -name Port -value '<%= @port %>'
