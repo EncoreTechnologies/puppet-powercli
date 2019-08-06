@@ -23,7 +23,13 @@ foreach($t in ($SNMPCheck.TrapTargets)){
 # Hashtable of all trap targets we WANT on the host
 $RequestedTargetsHashtable = @{}
 
-$test_join = {{ <%= @targets %>|join(',') }}
+
+
+
+$test_join =<%= @targets.join(",") %>
+
+
+
 
 # Building the hashtable of the trap targets we WANT on the host
 foreach($t in <%= @targets %>){
