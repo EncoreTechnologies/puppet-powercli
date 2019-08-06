@@ -40,7 +40,7 @@ define powercli::esx::snmp (
 
   
 
-  $test = template('powercli/powercli_esx_snmp_onlyif.ps1.erb')
-  notify {"TEST: ${test}" : }
+  #$test = template('powercli/powercli_esx_snmp_onlyif.ps1.erb')
+  #notify {"TEST: ${test}" : }
 
 }
