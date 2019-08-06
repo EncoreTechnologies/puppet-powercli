@@ -27,7 +27,7 @@ foreach($t in ($SNMPCheck.TrapTargets)){
 $RequestedTargetsCsvString = '<%= @targets.join(",") %>'
 
 # Split the STRING on "," to turn it into a powershell array
-$RequestedTargetsArray = $$targets_csv_string.Split(",")
+$RequestedTargetsArray = $RequestedTargetsCsvString.Split(",")
 
 # Hashtable of all trap targets we WANT on the host
 $RequestedTargetsHashtable = @{}
