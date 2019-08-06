@@ -36,8 +36,14 @@ foreach($t in $RequestedTargetsArray){
 # Iterate each requested target...
 foreach($t in $RequestedTargetsHashtable){
 
+  # Grabbing the community for the current $t off the $RequestedTargetsHashtable
+  # We do it this way because this does NOT work:
+  # $community = $RequestedTargetsHashtable[$t]['Community'] 
+  $community = $RequestedTargetsHashtable[$t] | select-object -ExpandProperty Community
+  $port = $RequestedTargetsHashtable[$t] | select-object -ExpandProperty Port
+  
   # Add the target to the host
-  Set-VMHostSnmp $HostSNMP -Enabled:$true -ReadOnlyCommunity $t.community -TargetCommunity $t.community -TargetPort $t.port -TargetHost $t.keys -AddTarget
+  Set-VMHostSnmp $HostSNMP -Enabled:$true -ReadOnlyCommunity $community -TargetCommunity $community -TargetPort $port -TargetHost $t -AddTarget
 }
 
 
