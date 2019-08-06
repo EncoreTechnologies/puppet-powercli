@@ -9,6 +9,35 @@ $HostSNMP = Get-VMHostSNMP
 # Set-VMHostSnmp -HostSnmp $HostSNMP -ReadOnlyCommunity @()
 
 # Clear ALL SNMP targets off the host
-# Set-VMHostSnmp -HostSnmp $HostSNMP -ReadOnlyCommunity @()
+Set-VMHostSnmp -HostSnmp $HostSNMP -ReadOnlyCommunity @()
 
-Set-VMHostSnmp $HostSNMP -Enabled:$true -ReadOnlyCommunity '<%= @community %>' -TargetCommunity '<%= @community %>' -TargetPort '<%= @port %>' -TargetHost '<%= @target %>' -AddTarget
+# Create a comma seperated string that contains all SNMP targets defined in hiera
+# This is required because arrays in Puppet look liked ['1.1.1.1', '2.2.2.2'] and you
+# cannot set this to a POSH variable. If you enclose this in quotes you CAN but it makes
+# creating the POSH array even more of a pain.
+$RequestedTargetsCsvString = '<%= @targets.join(",") %>'
+
+# Split the STRING on "," to turn it into a powershell array
+$RequestedTargetsArray = $RequestedTargetsCsvString.Split(",")
+
+# Hashtable of all trap targets we WANT on the host
+$RequestedTargetsHashtable = @{}
+
+# Building the hashtable of the trap targets we WANT on the host
+foreach($t in $RequestedTargetsArray){
+     $TargetObject = new-object PSCustomObject
+     $TargetObject | add-member -membertype noteproperty -name Community -value '<%= @community %>'
+     $TargetObject | add-member -membertype noteproperty -name Port -value '<%= @port %>'
+
+     # Add the TargetObject to the tracking hashtable
+     $RequestedTargetsHashtable.Add($t, $TargetObject)
+}
+
+# Iterate each requested target...
+foreach($t in $RequestedTargetsHashtable){
+
+  # Add the target to the host
+  Set-VMHostSnmp $HostSNMP -Enabled:$true -ReadOnlyCommunity $t.community -TargetCommunity $t.community -TargetPort $t.port -TargetHost $t.keys -AddTarget
+}
+
+
