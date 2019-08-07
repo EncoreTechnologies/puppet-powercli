@@ -64,12 +64,12 @@ foreach($t in $RequestedTargetsHashtable){
     $CurrentTargetPort = $TargetsHashtable[$t] | select-object -ExpandProperty Port
     
     # If the community is NOT already correct on the host (for the matching target we found)
-    if($RequestedTargetCommunity -neq $CurrentTargetCommunity){
+    if($RequestedTargetCommunity -ne $CurrentTargetCommunity){
       exit 1    
     }
 
     # If the port is NOT already correct on the host (for the matching target we found)
-    if($RequestedTargetPort -neq $CurrentTargetPort){
+    if($RequestedTargetPort -ne $CurrentTargetPort){
       exit 1
     }
   
