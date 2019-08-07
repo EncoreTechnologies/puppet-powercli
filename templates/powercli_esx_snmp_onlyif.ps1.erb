@@ -42,9 +42,41 @@ foreach($t in $RequestedTargetsArray){
      $RequestedTargetsHashtable.Add($t, $TargetObject)
 }
 
-if($RequestedTargetsHashtable -eq $TargetsHashtable){
-    exit 1
-}
+# if($RequestedTargetsHashtable -eq $TargetsHashtable){
+#     exit 1
+# }
 
-exit 0
+# Comparing the Hash of targets we detected on the host to the Hash of targets already present on the host
+foreach($t in $RequestedTargetsHashtable){
+
+  # If the current $t(arget) we want is already on the host...
+  if($TargetsHashtable.keys -contains $t.keys){
+
+    # What we want the community to be for the current $t(arget)
+    $RequestedTargetCommunity = $RequestedTargetHashtable[$t] | select-object -ExpandProperty Community
+    # What we want the port to be for the current $t(arget)
+    $RequestedTargetPort = $RequestedTargetsHashtable[$t] | select-object -ExpandProperty Port
+
+    # What the community is set to on the host currently (for the matching target we found)
+    $CurrentTargetCommunity = $TargetsHashtable[$t] | select-object -ExpandProperty Community
+    
+    # What the port is set to on the host currently (for the matching target we found)
+    $CurrentTargetPort = $TargetsHashtable[$t] | select-object -ExpandProperty Port
+    
+    # If the community is NOT already correct on the host (for the matching target we found)
+    if($RequestedTargetCommunity -neq $CurrentTargetCommunity){
+      exit 1    
+    }
+
+    # If the port is NOT already correct on the host (for the matching target we found)
+    if($RequestedTargetPort -neq $CurrentTargetPort){
+      exit 1
+    }
+  
+  }
+  # If the target we want is NOT on the host..
+  else{
+    exit 0
+  }
+}
 
