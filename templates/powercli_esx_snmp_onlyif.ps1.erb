@@ -53,7 +53,7 @@ foreach($t in $RequestedTargetsHashtable){
   if($TargetsHashtable.keys -contains $t.keys){
 
     # What we want the community to be for the current $t(arget)
-    $RequestedTargetCommunity = $RequestedTargetHashtable[$t] | select-object -ExpandProperty Community
+    $RequestedTargetCommunity = $RequestedTargetsHashtable[$t] | select-object -ExpandProperty Community
     # What we want the port to be for the current $t(arget)
     $RequestedTargetPort = $RequestedTargetsHashtable[$t] | select-object -ExpandProperty Port
 
