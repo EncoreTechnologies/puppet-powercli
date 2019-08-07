@@ -70,7 +70,13 @@ foreach($t in $RequestedTargetsHashtable){
       # kick off puppet exec run
       exit 0
     }
-  
+    # Grab the STRING that is the target IP of our current $t(arget)
+    $TargetIP = $t.keys
+
+    # We have validated that the matching $t(arget) we found on the host matches what puppet
+    # wants present on the host (for this target), so we remove this $t(arget) from the hashtable
+    # to keep track of any 'extra' targets that might be present on the host but ARENT in puppet
+    $TargetsHashtable.Remove("$TargetIP")
   }
   # If the target we want is NOT on the host..
   else{
@@ -78,6 +84,13 @@ foreach($t in $RequestedTargetsHashtable){
     exit 0
   }
 }
+
+# If there were any 'extra' targets present on the host but didn't have a match in puppet,
+# kick off a puppet run (this "cleans" the host of dirty SNMP targets)
+if($TargetsHashtable.Count -gt 0){
+  write-host "exit 0"
+}
+
 
 # If we made it to this point we have checked every SNMP target on the host and they completely
 # match what is defined in puppet so we exit 1 to let puppet know all is well on this hosts SNMP.
