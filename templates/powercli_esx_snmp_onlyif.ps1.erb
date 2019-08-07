@@ -42,10 +42,6 @@ foreach($t in $RequestedTargetsArray){
      $RequestedTargetsHashtable.Add($t, $TargetObject)
 }
 
-# if($RequestedTargetsHashtable -eq $TargetsHashtable){
-#     exit 1
-# }
-
 # Comparing the Hash of targets we detected on the host to the Hash of targets already present on the host
 foreach($t in $RequestedTargetsHashtable){
 
@@ -65,18 +61,25 @@ foreach($t in $RequestedTargetsHashtable){
     
     # If the community is NOT already correct on the host (for the matching target we found)
     if($RequestedTargetCommunity -ne $CurrentTargetCommunity){
-      exit 1    
+      # kick off puppet exec run
+      exit 1
     }
 
     # If the port is NOT already correct on the host (for the matching target we found)
     if($RequestedTargetPort -ne $CurrentTargetPort){
+      # kick off puppet exec run
       exit 1
     }
   
   }
   # If the target we want is NOT on the host..
   else{
-    exit 0
+    # kick off puppet exec run  
+    exit 1
   }
 }
+
+# If we made it to this point we have checked every SNMP target on the host and they completely
+# match what is defined in puppet so we exit 1 to let puppet know all is well on this hosts SNMP.
+exit 0
 
