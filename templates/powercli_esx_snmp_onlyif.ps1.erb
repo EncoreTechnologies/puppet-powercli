@@ -7,21 +7,94 @@ if(($SNMPCheck.Enabled) -ne 'True'){
      exit 0
 }
 
-if(($SNMPCheck.Port) -ne '<%= @port %>'){
-     exit 0
-}
+# Hashtable of all trap targets on the host currently
+$TargetsHashtable = @{}
 
+# Building a hashtable of current trap targets on the host
 foreach($t in ($SNMPCheck.TrapTargets)){
-    
-    if(($t.HostName) -ne '<%= @target %>'){
-         exit 0
-    }
-    if(($t.Community) -ne '<%= @community %>'){
-         exit 0
-    }
-    if(($t.Port) -ne '<%= @port %>'){
-         exit 0
-    }
+     $TargetObject = new-object PSCustomObject
+     $TargetObject | add-member -membertype noteproperty -name Community -value $t.Community
+     $TargetObject | add-member -membertype noteproperty -name Port -value $t.Port
+
+     # Add this object to the tracking hashtable
+     $TargetsHashtable.Add($t.HostName, $TargetObject)
 }
 
+# Create a comma seperated string that contains all SNMP targets defined in hiera
+# This is required because arrays in Puppet look liked ['1.1.1.1', '2.2.2.2'] and you
+# cannot set this to a POSH variable. If you enclose this in quotes you CAN but it makes
+# creating the POSH array even more of a pain.
+$RequestedTargetsCsvString = '<%= @targets.join(",") %>'
+
+# Split the STRING on "," to turn it into a powershell array
+$RequestedTargetsArray = $RequestedTargetsCsvString.Split(",")
+
+# Hashtable of all trap targets we WANT on the host
+$RequestedTargetsHashtable = @{}
+
+# Building the hashtable of the trap targets we WANT on the host
+foreach($t in $RequestedTargetsArray){
+     $TargetObject = new-object PSCustomObject
+     $TargetObject | add-member -membertype noteproperty -name Community -value '<%= @community %>'
+     $TargetObject | add-member -membertype noteproperty -name Port -value '<%= @port %>'
+
+     # Add the TargetObject to the tracking hashtable
+     $RequestedTargetsHashtable.Add($t, $TargetObject)
+}
+
+# Comparing the Hash of targets we detected on the host to the Hash of targets already present on the host
+foreach($t in $RequestedTargetsHashtable){
+
+  # If the current $t(arget) we want is already on the host...
+  if($TargetsHashtable.keys -contains $t.keys){
+
+    # What we want the community to be for the current $t(arget)
+    # We do it this way because this does NOT work:
+    # $community = $RequestedTargetsHashtable[$t]['Community']
+    $RequestedTargetCommunity = $RequestedTargetsHashtable[$t] | select-object -ExpandProperty Community
+    # What we want the port to be for the current $t(arget)
+    $RequestedTargetPort = $RequestedTargetsHashtable[$t] | select-object -ExpandProperty Port
+
+    # What the community is set to on the host currently (for the matching target we found)
+    $CurrentTargetCommunity = $TargetsHashtable[$t] | select-object -ExpandProperty Community
+    
+    # What the port is set to on the host currently (for the matching target we found)
+    $CurrentTargetPort = $TargetsHashtable[$t] | select-object -ExpandProperty Port
+    
+    # If the community is NOT already correct on the host (for the matching target we found)
+    if($RequestedTargetCommunity -ne $CurrentTargetCommunity){
+      # kick off puppet exec run
+      exit 0
+    }
+
+    # If the port is NOT already correct on the host (for the matching target we found)
+    if($RequestedTargetPort -ne $CurrentTargetPort){
+      # kick off puppet exec run
+      exit 0
+    }
+    # Grab the STRING that is the target IP of our current $t(arget)
+    $TargetIP = $t.keys
+
+    # We have validated that the matching $t(arget) we found on the host matches what puppet
+    # wants present on the host (for this target), so we remove this $t(arget) from the hashtable
+    # to keep track of any 'extra' targets that might be present on the host but ARENT in puppet
+    $TargetsHashtable.Remove("$TargetIP")
+  }
+  # If the target we want is NOT on the host..
+  else{
+    # kick off puppet exec run  
+    exit 0
+  }
+}
+
+# If there were any 'extra' targets present on the host but didn't have a match in puppet,
+# kick off a puppet run (this "cleans" the host of dirty SNMP targets)
+if($TargetsHashtable.Count -gt 0){
+  exit 0
+}
+
+
+# If we made it to this point we have checked every SNMP target on the host and they completely
+# match what is defined in puppet so we exit 1 to let puppet know all is well on this hosts SNMP.
 exit 1
+

@@ -8,4 +8,41 @@ $HostSNMP = Get-VMHostSNMP
 # $HostSNMP = Get-VMHostSNMP
 # Set-VMHostSnmp -HostSnmp $HostSNMP -ReadOnlyCommunity @()
 
-Set-VMHostSnmp $HostSNMP -Enabled:$true -ReadOnlyCommunity '<%= @community %>' -TargetCommunity '<%= @community %>' -TargetPort '<%= @port %>' -TargetHost '<%= @target %>' -AddTarget
+# Clear ALL SNMP targets off the host
+Set-VMHostSnmp -HostSnmp $HostSNMP -ReadOnlyCommunity @()
+
+# Create a comma seperated STRING that contains all SNMP targets defined in hiera
+# This is required because arrays in Puppet look like: ['1.1.1.1', '2.2.2.2'] and you
+# cannot set this to a POSH variable. If you enclose this in quotes you CAN but it makes
+# creating the POSH array even more of a pain.
+$RequestedTargetsCsvString = '<%= @targets.join(",") %>'
+
+# Split the STRING on "," to turn it into a powershell array
+$RequestedTargetsArray = $RequestedTargetsCsvString.Split(",")
+
+# Hashtable of all trap targets we WANT on the host
+$RequestedTargetsHashtable = @{}
+
+# Building the hashtable of the trap targets we WANT on the host
+foreach($t in $RequestedTargetsArray){
+     $TargetObject = new-object PSCustomObject
+     $TargetObject | add-member -membertype noteproperty -name Community -value '<%= @community %>'
+     $TargetObject | add-member -membertype noteproperty -name Port -value '<%= @port %>'
+
+     # Add the TargetObject to the tracking hashtable
+     $RequestedTargetsHashtable.Add($t, $TargetObject)
+}
+
+# Iterate each requested target...
+foreach($t in $RequestedTargetsHashtable.keys){
+
+  # Grabbing the community for the current $t off the $RequestedTargetsHashtable
+  # We do it this way because this does NOT work:
+  # $community = $RequestedTargetsHashtable[$t]['Community']
+  $community = $RequestedTargetsHashtable[$t] | select-object -ExpandProperty Community
+  $port = $RequestedTargetsHashtable[$t] | select-object -ExpandProperty Port
+  
+  # Add the target to the host
+  Set-VMHostSnmp $HostSNMP -Enabled:$true -ReadOnlyCommunity $community -TargetCommunity $community -TargetPort $port -TargetHost $t -AddTarget
+}
+
