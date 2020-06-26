@@ -1,6 +1,6 @@
 {
   "name": "encore-powercli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Encore Technologies",
   "summary": "Puppet module to install VMware PowerCLI and use it to manage vCenter ",
   "license": "Apache-2.0",
