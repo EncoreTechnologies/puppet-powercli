@@ -5,6 +5,8 @@
   "summary": "Puppet module to install VMware PowerCLI and use it to manage vCenter ",
   "license": "Apache-2.0",
   "source": "https://github.com/EncoreTechnologies/puppet-powercli",
+  "project_page": "https://github.com/EncoreTechnologies/puppet-powercli",
+  "issues_url": "https://github.com/EncoreTechnologies/puppet-powercli/issues",
   "dependencies": [
     {
       "name": "puppetlabs/powershell",
