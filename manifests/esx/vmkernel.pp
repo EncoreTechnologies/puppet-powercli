@@ -98,28 +98,28 @@
 #           management => {
 #             ip        => 192.168.2.11,
 #             portgroup => 'snowflake_management_portgroup_name',
-#             vswitch   => 'snowflake_management_vswitch_name',
+#             switch   => 'snowflake_management_vswitch_name',
 #             mtu       => 1500,
 #             subnet    => 255.255.0.0
 #           },
 #           vmotion => {
 #             ip        => 192.168.3.11,
 #             portgroup => 'snowflake_vmotion_portgroup_name',
-#             vswitch   => 'snowflake_vmotion_vswitch_name',
+#             switch   => 'snowflake_vmotion_vswitch_name',
 #             mtu       => 1500,
 #             subnet    => 255.255.0.0
 #           },
 #           iscsi_a => {
 #             ip        => 192.168.10.11,
 #             portgroup => 'snowflake_iscsi_a_portgroup_name',
-#             vswitch   => 'snowflake_iscsi_a_vswitch_name',
+#             switch   => 'snowflake_iscsi_a_vswitch_name',
 #             mtu       => 1500,
 #             subnet    => 255.255.0.0          
 #           },
 #           iscsi_b => {
 #             ip        => 192.168.11.11,
 #             portgroup => 'snowflake_iscsi_b_portgroup_name',
-#             vswitch   => 'snowflake_iscsi_b_vswitch_name',
+#             switch   => 'snowflake_iscsi_b_vswitch_name',
 #             mtu       => 1500,
 #             subnet    => 255.255.0.0          
 #           },
@@ -181,7 +181,7 @@
 #           },
 #           vmotion => {
 #             ip      => 192.168.3.11,
-#             vswitch => 'snowflake_vmotion_vswitch_name',
+#             switch => 'snowflake_vmotion_vswitch_name',
 #           },
 #           iscsi_a => {
 #             ip  => 192.168.10.11,
@@ -247,7 +247,7 @@ define powercli::esx::vmkernel (
     $_new_cmd = "New-VMHostNetworkAdapter -VMHost ${name} -VirtualSwitch ${vs} -Mtu ${mtu} -PortGroup ${pg} -IP ${ip} -SubnetMask ${subnet}"
 
     if $use == 'vmotion' {
-      exec { "${name}: Create ${use} vmkernel ${ip} ":
+      exec { "${name}: Create ${use} vmkernel ${ip} on ${pg} and ${vs}":
         command  => "${_connect}; ${_new_cmd} -VMotionEnabled \$true",
         provider => 'powershell',
         onlyif   => template('powercli/powercli_esx_vmkernel_onlyif.ps1.erb'),
@@ -255,7 +255,7 @@ define powercli::esx::vmkernel (
     }
     # Filtering out the management VMKernel (exists by default - it's required to talk to the host)
     elsif ($use == 'iscsi_a') or ($use == 'iscsi_b')  {
-      exec { "${name}: Create ${use} vmkernel ${ip} ":
+      exec { "${name}: Create ${use} vmkernel ${ip} on ${pg} and ${vs}":
         command  => "${_connect}; ${_new_cmd}",
         provider => 'powershell',
         onlyif   => template('powercli/powercli_esx_vmkernel_onlyif.ps1.erb'),
