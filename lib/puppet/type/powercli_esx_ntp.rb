@@ -18,10 +18,8 @@ Puppet::Type.newtype(:powercli_esx_ntp) do
     validate do |value|
       # puppet, being puppet if it's an array, it passes each value of t he array into this
       # validate function, so we just need to check that each thing is a string
-      value.each do |v|
-        unless v.is_a?(String)
-          raise ArgumentError, "each ntp_server is expected to be a String, given: #{v.class.name}"
-        end
+      unless value.is_a?(String)
+        raise ArgumentError, "each ntp_server is expected to be a String, given: #{value.class.name}"
       end
     end
     

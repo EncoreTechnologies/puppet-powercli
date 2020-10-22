@@ -3,11 +3,14 @@ require 'ruby-pwsh'
 
 Puppet::Type.type(:powercli_esx_ntp).provide(:api, parent: Puppet::Provider::PowerCLI) do
 
+  commands :powershell => 'powershell.exe'
+
+  # setup our cached instances
+  class_variable_set(:@@instances, nil)
+
   # always need to define this in our implementation classes
   mk_resource_methods
-  
-  commands :powershell => 'powershell.exe'
-  
+
   def self.get_instances(vcenter, username, password)
     return @@instances unless @@instance.nil?
     # Want to return an array of instances
@@ -29,7 +32,7 @@ foreach($h in $hosts) {
 }
 $ntp_servers_hash | ConvertTo-Json
     EOF
-    
+
     ntpservers_stdout = ps(cmd)[:stdout]
     # json parse expects a json string, powershell does not stdout with quotes
     # we might be able to remove this line because powershell exits with a viable ruby array already:
@@ -39,7 +42,7 @@ $ntp_servers_hash | ConvertTo-Json
     # ]
     # what happens if this returns null??
     ntpservers_hash = JSON.parse(ntpservers_stdout)
-    
+
     # create instance hash - this contains info about ONE host at a time
     # the values should match the data "shape" (ie have the same fields) as our
     # type.
@@ -57,9 +60,9 @@ $ntp_servers_hash | ConvertTo-Json
   end
 
   def read_instance
-    instances = self.get_instances(resource[:vcenter],
-                                   resource[:username],
-                                   resource[:password])
+    instances = self.class.get_instances(resource[:vcenter],
+                                         resource[:username],
+                                         resource[:password])
     if instances.key?(resource[:esx_host])
       instances[resource[:esx_host]]
     else
@@ -91,7 +94,7 @@ Get-VMHost -name '#{resource[:esx_host]}' | Add-VMHostNtpServer -NtpServer #{res
     end
 
     Puppet.debug("Executing powershell: #{connect_cmd + cmd}")
-    
+
     output = ps(connect_cmd + cmd)
     if output[:exitcode] != 0
       raise "Error when executing command #{cmd}\n stdout = #{output[:stdout]} \n stderr = #{output[:stderr]}"
