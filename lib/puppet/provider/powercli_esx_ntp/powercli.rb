@@ -1,25 +1,25 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'powercli'))
+require 'puppet_x/encore/powercli/cached_instances'
 require 'ruby-pwsh'
 
 Puppet::Type.type(:powercli_esx_ntp).provide(:api, parent: Puppet::Provider::PowerCLI) do
 
   commands :powershell => 'powershell.exe'
-
-  # setup our cached instances
-  class_variable_set(:@@instances, nil)
-
+  
   # always need to define this in our implementation classes
   mk_resource_methods
 
-  def self.get_instances(vcenter, username, password)
-    return @@instances unless @@instance.nil?
+  # global cached instances across all resource instances
+  def all_instances
+    Puppet.debug("all_instances - cached instances is: #{cached_instances}")
+    Puppet.debug("all_instances - cached instances object id: #{cached_instances.object_id}")
+    return cached_instances unless cached_instances.nil?
     # Want to return an array of instances
     #  each hash should have the same properties as the properties
     #  of this "type"
     #  remember the keys should be symbols, aka :ntp_servers not 'ntp_servers'
     # This is a tracking hash which will contain info about each host and NTP server relationships
     cmd = <<-EOF
-Connect-VIServer -Server '#{vcenter}' -Username '#{username}' -Password '#{password}'
 $ntp_servers_hash = @{}
 $hosts = Get-VMHost
 foreach($h in $hosts) {
@@ -33,7 +33,7 @@ foreach($h in $hosts) {
 $ntp_servers_hash | ConvertTo-Json
     EOF
 
-    ntpservers_stdout = ps(cmd)[:stdout]
+    ntpservers_stdout = powercli_connect_exec(cmd)[:stdout]
     # json parse expects a json string, powershell does not stdout with quotes
     # we might be able to remove this line because powershell exits with a viable ruby array already:
     # [
@@ -48,23 +48,23 @@ $ntp_servers_hash | ConvertTo-Json
     # type.
     # the key, should be the title/namevar so we can do a lookup in our
     # read_instance function
-    @@instances = {}
-    ntpservers_hash.each do |esx_host, ntp_servers|
-      @@instances[esx_host] = {
-        esx_host: esx_host,
-        ntp_servers: ntpservers_array,
+    Puppet.debug("all_instances - hopefully calling setter method")
+    cached_instances_set({})
+    ntpservers_hash.each do |esx_host, ntp_servers_array|
+      cached_instances[esx_host] = {
         ensure: :present,
+        esx_host: esx_host,
+        ntp_servers: ntp_servers_array,
       }
     end
-    @@instances
+    Puppet.debug("all_instances - cached instances is at end: #{cached_instances}")
+    Puppet.debug("all_instances - cached instances object_id at end: #{cached_instances.object_id}")
+    cached_instances
   end
 
   def read_instance
-    instances = self.class.get_instances(resource[:vcenter],
-                                         resource[:username],
-                                         resource[:password])
-    if instances.key?(resource[:esx_host])
-      instances[resource[:esx_host]]
+    if all_instances.key?(resource[:esx_host])
+      all_instances[resource[:esx_host]]
     else
       {
         ensure: :absent,
@@ -93,9 +93,7 @@ Get-VMHost -name '#{resource[:esx_host]}' | Add-VMHostNtpServer -NtpServer #{res
     EOF
     end
 
-    Puppet.debug("Executing powershell: #{connect_cmd + cmd}")
-
-    output = ps(connect_cmd + cmd)
+    output = powercli_connect_exec(cmd)
     if output[:exitcode] != 0
       raise "Error when executing command #{cmd}\n stdout = #{output[:stdout]} \n stderr = #{output[:stderr]}"
     end

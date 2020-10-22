@@ -87,6 +87,21 @@ class Puppet::Provider::PowerCLI < Puppet::Provider
     @cached_instance ||= read_instance
   end
 
+  # global cached instances across all resource instances
+  def cached_instances
+    inst = PuppetX::PowerCLI::CachedInstances.instance
+    Puppet.debug("cached_instances - object id: #{inst.object_id}")
+    Puppet.debug("cached_instances - resource.type: #{resource.type}")
+    PuppetX::PowerCLI::CachedInstances.instance.cache[resource.type]
+  end
+
+  def cached_instances_set(inst)
+    Puppet.debug("cached_instances= - inst object id: #{inst.object_id}")
+    Puppet.debug("cached_instances= - resource.type: #{resource.type}")
+    PuppetX::PowerCLI::CachedInstances.instance.cache[resource.type] = inst
+    Puppet.debug("cached_instances= - end object id: #{PuppetX::PowerCLI::CachedInstances.instance.cache[resource.type].object_id}")
+  end
+
   # this method should retrieve an instance and return it as a hash
   # note: we explicitly do NOT cache within this method because we want to be
   #       able to call it both in initialize() and in flush() and return the current
@@ -106,22 +121,27 @@ class Puppet::Provider::PowerCLI < Puppet::Provider
     raise NotImplementedError, 'flush_instance needs to be implemented by child providers'
   end
 
-  def connect_cmd
-    cmd = <<-EOF
-Connect-VIServer -Server '#{resource[:vcenter]}' -Username '#{resource[:username]}' -Password '#{resource[:password]}'
-
-EOF
-  end
-
   # running powershell from a self. methood
   #   ps(cmd)[:stdout]
   #
   # running powershell from a normal methood
   #   self.ps(cmd)[:stdout]
-  def self.ps(cmd)
+  def ps(cmd)
     @@ps ||= Pwsh::Manager.instance(Pwsh::Manager.powershell_path, Pwsh::Manager.powershell_args)
     Puppet.debug("Running command: #{cmd}")
+    Puppet.debug("@@ps instance id: #{@@ps.object_id}")
     # need to use [:stdout] from result
     @@ps.execute(cmd)
+  end
+
+  def connect_cmd
+    cmd = <<-EOF
+Connect-VIServer -Server '#{resource[:vcenter_connection]['server']}' -Username '#{resource[:vcenter_connection]['username']}' -Password '#{resource[:vcenter_connection]['password']}' | Out-Null
+
+EOF
+  end
+  
+  def powercli_connect_exec(cmd)
+    ps(connect_cmd + cmd)
   end
 end

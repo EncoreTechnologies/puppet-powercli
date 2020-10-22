@@ -45,29 +45,28 @@ Puppet::Type.newtype(:powercli_esx_ntp) do
   end
 
   ################################
-  newparam(:vcenter) do
-    desc 'The vcenter which manages the esx host the NTP servers will be managed on'
-    validate do |value|
-      unless value.is_a?(String)
-        raise ArgumentError, "vcenter is expected to be a String, given: #{value.class.name}"
-      end
-    end
-  end
+  newparam(:vcenter_connection) do
+    desc <<-EOF
+      The vcenter connection information. This should be a hash containing the following keys:
+        - server : the hostname / ip of the server
+        - username : the username to authenticate with vcenter
+        - password : the password for the user when authenitcating
 
-  newparam(:username) do
-    desc 'The username to login to vcenter'
-    validate do |value|
-      unless value.is_a?(String)
-        raise ArgumentError, "Username is expected to be a String, given: #{value.class.name}"
-      end
-    end
-  end
+      Each of these keys should be a string
+    EOF
 
-  newparam(:password) do
-    desc 'The password to login to vcenter'
     validate do |value|
-      unless value.is_a?(String)
-        raise ArgumentError, "Password is expected to be a String, given: #{value.class.name}"
+      unless value.is_a?(Hash)
+        raise ArgumentError, "vcenter_connection is expected to be a Hash, given: #{value.class.name}"
+      end
+      
+      ['server', 'username', 'password'].each do|key|
+        unless value.key?(key)
+          raise ArgumentError, "vcenter_connection is missing key '#{key}'"
+        end
+        unless value[key].is_a?(String)
+          raise ArgumentError, "vcenter_connection['#{key}'] is expected to be a String, given: #{value[key].class.name}"
+        end
       end
     end
   end
