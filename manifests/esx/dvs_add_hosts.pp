@@ -64,7 +64,7 @@ define powercli::esx::dvs_add_hosts (
 
   include powercli::vcenter::connection
   $_connect = $powercli::vcenter::connection::connect
-    
+
   # This returns null if the host does not have 'vswitches' (both standard and distributed) overrides set.
   $current_server_overrides = $overrides[$esx_host]['vswitches']
 
