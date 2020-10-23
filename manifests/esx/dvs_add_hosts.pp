@@ -1,5 +1,7 @@
 # @summary Resource that manages ESX DvSwitch Host membership
 #
+# @param esx_host
+#   Name or IP address of the ESX host you would like joined to the dvswitch.
 # @param dvswitch_name
 #   Name of the dvs.
 # @param dvswitch_nic_defaults
@@ -21,6 +23,7 @@
 #
 # @example Basic usage - Using Default NICs on host. This will attach vmnic0 & 1 to the dvs.
 #   powercli::esx::dvs_add_hosts {'my-vmware-host.fqdn.tld':
+#     esx_host      => 'my_esx_hostname_or_ip_here',
 #     dvswitch_name => 'my_dvswitch_name_here',
 #     dvswitch_nic_defaults => {
 #     'my_dvswitch_name_here' => {
@@ -33,6 +36,7 @@
 #   }
 # @example Override usage - Using Override NICs on host. This will attach vmnic2 & 3 to the dvs.
 #   powercli::esx::dvs_add_hosts {'my-special-vmware-host.fqdn.tld':
+#     esx_host      => 'my_esx_hostname_or_ip_here',
 #     dvswitch_name => 'my_dvswitch_name_here',
 #     dvswitch_nic_defaults => {
 #     'my_dvswitch_name_here' => {
