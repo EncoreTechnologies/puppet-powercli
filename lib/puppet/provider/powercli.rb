@@ -135,12 +135,26 @@ class Puppet::Provider::PowerCLI < Puppet::Provider
   end
 
   def connect_cmd
-    cmd = <<-EOF
-Connect-VIServer -Server '#{resource[:vcenter_connection]['server']}' -Username '#{resource[:vcenter_connection]['username']}' -Password '#{resource[:vcenter_connection]['password']}' | Out-Null
+    # check if we have connected before (aka if we have a cached session)
+    if @@session_id.nil?
+      # our session is nil, so we need to conenct
+      session_cmd = <<-EOF
+$session = Connect-VIServer -Server '#{resource[:vcenter_connection]['server']}' -Username '#{resource[:vcenter_connection]['username']}' -Password '#{resource[:vcenter_connection]['password']}
+$session.SessionId
+EOF
+      resp = ps(session_cmd)
+      # remove quotes from the session id string, it returns us something in the format of:
+      #  "abc123"
+      # we strip because it returns us some new lines and white space in there as well
+      @@session_id = resp[:stdout].gsub(/"/, '').strip
+    end
 
+    # connect with our session from above for from some other connection attempt :)
+    <<-EOF
+Connect-VIServer -Server -Server '#{resource[:vcenter_connection]['server']}' -Session '#{@@session_id}' | Out-Null
 EOF
   end
-  
+
   def powercli_connect_exec(cmd)
     ps(connect_cmd + cmd)
   end

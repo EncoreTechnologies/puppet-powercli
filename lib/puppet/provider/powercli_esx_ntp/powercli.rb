@@ -5,7 +5,7 @@ require 'ruby-pwsh'
 Puppet::Type.type(:powercli_esx_ntp).provide(:api, parent: Puppet::Provider::PowerCLI) do
 
   commands :powershell => 'powershell.exe'
-  
+
   # always need to define this in our implementation classes
   mk_resource_methods
 
