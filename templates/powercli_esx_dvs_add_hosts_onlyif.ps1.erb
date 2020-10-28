@@ -10,7 +10,7 @@ foreach($u in $DvUplinks){
     $VMHost = $u.ProxyHost.Name
 
     # If we found the specific uplink for the specific vmhost already configured as an uplink...
-    if($Uplink -eq '<%= @nic %>' -and $VMHost -eq '<%= @name %>'){
+    if($Uplink -eq '<%= @nic %>' -and $VMHost -eq '<%= @esx_host %>'){
         # Exit 1 so puppet skips this uplink
         exit 1
     }
