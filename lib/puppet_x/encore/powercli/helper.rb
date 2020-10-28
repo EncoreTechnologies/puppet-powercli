@@ -13,7 +13,7 @@ module PuppetX::PowerCLI
                                           Pwsh::Manager.powershell_args)
       @cached_powercli_sessions = {}
     end
-    
+
     # Example usage:
     #   PuppetX::PowerCLI::Helper.ps(cmd)[:stdout]
     def ps(cmd)
@@ -21,7 +21,7 @@ module PuppetX::PowerCLI
       # need to use [:stdout] from result
       @cached_ps.execute(cmd)
     end
-    
+
     # connects to a PowerCLI session and returns the session ID
     def connect_session(vcenter_connection)
       if @cached_powercli_sessions.key?(vcenter_connection['server'])
@@ -37,7 +37,7 @@ module PuppetX::PowerCLI
         # remove quotes from the session id string, it returns us something in the format of:
         #  "abc123"
         # we strip because it returns us some new lines and white space in there as well
-        session_id = resp[:stdout].gsub(/"/, '').strip
+        session_id = resp[:stdout].delete('"').strip
         Puppet.debug("connect session parsed and stripped session id = #{session_id}")
 
         # save the session ID to our cache

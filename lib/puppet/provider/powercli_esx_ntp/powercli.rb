@@ -2,8 +2,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), '..', 'powercli'))
 require 'ruby-pwsh'
 
 Puppet::Type.type(:powercli_esx_ntp).provide(:api, parent: Puppet::Provider::PowerCLI) do
-
-  commands :powershell => 'powershell.exe'
+  commands powershell: 'powershell.exe'
 
   # always need to define this in our implementation classes
   mk_resource_methods
@@ -16,7 +15,7 @@ Puppet::Type.type(:powercli_esx_ntp).provide(:api, parent: Puppet::Provider::Pow
     # to be loaded once, returning all instances that exist of this resource in vsphere
     # then, we can lookup our version by name/id/whatever. This saves a TON of processing
     return cached_instances unless cached_instances.nil?
-    
+
     # Want to return an array of instances
     #  each hash should have the same properties as the properties
     #  of this "type"
@@ -51,7 +50,7 @@ Puppet::Type.type(:powercli_esx_ntp).provide(:api, parent: Puppet::Provider::Pow
     # type.
     # the key, should be the title/namevar so we can do a lookup in our
     # read_instance function
-    Puppet.debug("all_instances - hopefully calling setter method")
+    Puppet.debug('all_instances - hopefully calling setter method')
     cached_instances_set({})
     ntpservers_hash.each do |esx_host, ntp_servers_array|
       cached_instances[esx_host] = {
@@ -83,7 +82,7 @@ Puppet::Type.type(:powercli_esx_ntp).provide(:api, parent: Puppet::Provider::Pow
     cmd = <<-EOF
       # The old / original NTP servers
       $OriginalNTPServers = Get-VMHostNtpServer -VMHost '#{resource[:esx_host]}'
-      
+
       # Remove old NTP servers
       Remove-VMHostNtpServer -VMHost '#{resource[:esx_host]}' -NtpServer $OriginalNTPServers -confirm:$false
       EOF
@@ -97,8 +96,6 @@ Puppet::Type.type(:powercli_esx_ntp).provide(:api, parent: Puppet::Provider::Pow
     end
 
     output = powercli_connect_exec(cmd)
-    if output[:exitcode] != 0
-      raise "Error when executing command #{cmd}\n stdout = #{output[:stdout]} \n stderr = #{output[:stderr]}"
-    end
+    raise "Error when executing command #{cmd}\n stdout = #{output[:stdout]} \n stderr = #{output[:stderr]}" unless output[:exitcode].zero?
   end
 end
