@@ -71,7 +71,7 @@ Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::
     if resource[:ensure] == :present
       cmd = <<-EOF
         # Example "udp://192.168.1.10:514"
-        $syslog = "#{resource[:syslog_protocol]}://#{resource[:syslog_server]}:#{resource[:syslog_port]}"
+        $syslog = '#{resource[:syslog_protocol]}://#{resource[:syslog_server]}:#{resource[:syslog_port]}'
         Set-VMHostSysLogServer -VMHost '#{resource[:esx_host]}' -SysLogServer $syslog
         EOF
     end
