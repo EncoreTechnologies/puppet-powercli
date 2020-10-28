@@ -23,7 +23,7 @@ Puppet::Type.type(:powercli_esx_ntp).provide(:api, parent: Puppet::Provider::Pow
     # This is a tracking hash which will contain info about each host and NTP server relationships
     cmd = <<-EOF
       $ntp_servers_hash = @{}
-      $hosts = Get-VMHost
+      $hosts = #{powercli_get_online_hosts}
       foreach($h in $hosts) {
         $servers = Get-VMHostNtpServer -VMHost $h
         if ($servers) {

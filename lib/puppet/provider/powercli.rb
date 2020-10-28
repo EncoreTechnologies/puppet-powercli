@@ -141,7 +141,7 @@ class Puppet::Provider::PowerCLI < Puppet::Provider
 
   # This command will be used by nearly all providers to fetch the hosts that are
   # NOT disconnected or offline
-  def powercli_get_online_hosts(cmd)
+  def powercli_get_online_hosts
     "Get-VMHost | Where-Object {($_.ConnectionState -ne 'Disconnected') -and ($_.ConnectionState -ne 'NotResponding')}"
   end
 end
