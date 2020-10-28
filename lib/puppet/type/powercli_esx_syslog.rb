@@ -20,7 +20,7 @@ Puppet::Type.newtype(:powercli_esx_syslog) do
         raise ArgumentError, "each syslog_server is expected to be a String, given: #{value.class.name}"
       end
     end
-    
+
     def sort_array(a)
       if a.nil?
         []
@@ -50,7 +50,7 @@ Puppet::Type.newtype(:powercli_esx_syslog) do
         raise ArgumentError, "each syslog_port is expected to be a String, given: #{value.class.name}"
       end
     end
-    
+
     def sort_array(a)
       if a.nil?
         []
@@ -72,7 +72,6 @@ Puppet::Type.newtype(:powercli_esx_syslog) do
     end
   end
 
-
   newproperty(:syslog_protocol, array_matching: :all) do
     validate do |value|
       # puppet, being puppet if it's an array, it passes each value of the array into this
@@ -81,7 +80,7 @@ Puppet::Type.newtype(:powercli_esx_syslog) do
         raise ArgumentError, "syslog_protocol is expected to be a String, given: #{value.class.name}"
       end
     end
-    
+
     def sort_array(a)
       if a.nil?
         []
@@ -102,7 +101,7 @@ Puppet::Type.newtype(:powercli_esx_syslog) do
       sort_array(is) == should
     end
   end  
-  
+
   ################################
   newparam(:vcenter_connection) do
     desc <<-EOF
@@ -118,7 +117,6 @@ Puppet::Type.newtype(:powercli_esx_syslog) do
       unless value.is_a?(Hash)
         raise ArgumentError, "vcenter_connection is expected to be a Hash, given: #{value.class.name}"
       end
-      
       ['server', 'username', 'password'].each do|key|
         unless value.key?(key)
           raise ArgumentError, "vcenter_connection is missing key '#{key}'"

@@ -2,7 +2,6 @@ require File.expand_path(File.join(File.dirname(__FILE__), '..', 'powercli'))
 require 'ruby-pwsh'
 
 Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::PowerCLI) do
-
   commands :powershell => 'powershell.exe'
 
   # always need to define this in our implementation classes
@@ -16,7 +15,7 @@ Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::
     # to be loaded once, returning all instances that exist of this resource in vsphere
     # then, we can lookup our version by name/id/whatever. This saves a TON of processing
     return cached_instances unless cached_instances.nil?
-    
+
     cmd = <<-EOF
       $syslog_servers_hash = @{}
       $hosts = Get-VMHost
@@ -46,11 +45,9 @@ Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::
       }
     end
 
-    #Puppet.debug("all_instances - cached instances is at end: #{cached_instances}")
-    #Puppet.debug("all_instances - cached instances object_id at end: #{cached_instances.object_id}")
     cached_instances
   end
-e
+
   def read_instance
     if all_instances.key?(resource[:esx_host])
       all_instances[resource[:esx_host]]
@@ -75,8 +72,6 @@ e
     end
 
     output = powercli_connect_exec(cmd)
-    if output[:exitcode] != 0
-      raise "Error when executing command #{cmd}\n stdout = #{output[:stdout]} \n stderr = #{output[:stderr]}"
-    end
+    raise "Error when executing command #{cmd}\n stdout = #{output[:stdout]} \n stderr = #{output[:stderr]}" unless output[:exitcode].zero?
   end
 end
