@@ -18,7 +18,7 @@ Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::
 
     cmd = <<-EOF
       $syslog_servers_hash = @{}
-      $hosts = Get-VMHost | Where-Object {($_.ConnectionState -ne 'Disconnected') -and ($_.ConnectionState -ne 'NotResponding')}
+      $hosts = #{powercli_get_online_hosts}
       foreach($h in $hosts) {
         $servers = Get-VMHostSysLogServer -VMHost $h
         if ($servers){
