@@ -81,13 +81,13 @@ Puppet::Type.newtype(:powercli_esx_syslog) do
       end
     end
 
-    def sort_array(a)
-      if a.nil?
-        []
-      else
-        a.sort
-      end
-    end
+    # def sort_array(a)
+    #   if a.nil?
+    #     []
+    #   else
+    #     a.sort
+    #   end
+    # end
 
     def should
       sort_array(super)
