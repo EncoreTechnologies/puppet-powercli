@@ -12,7 +12,7 @@ Puppet::Type.newtype(:powercli_esx_syslog) do
     end
   end
 
-  newproperty(:syslog_server, array_matching: :all) do
+  newproperty(:syslog_server) do
     validate do |value|
       # puppet, being puppet if it's an array, it passes each value of the array into this
       # validate function, so we just need to check that each thing is a string
@@ -29,20 +29,20 @@ Puppet::Type.newtype(:powercli_esx_syslog) do
     #   end
     # end
 
-    def should
-      sort_array(super)
-    end
+    # def should
+    #   sort_array(super)
+    # end
 
-    def should=(values)
-      super(sort_array(values))
-    end
+    # def should=(values)
+    #   super(sort_array(values))
+    # end
 
-    def insync?(is)
-      sort_array(is) == should
-    end
+    # def insync?(is)
+    #   sort_array(is) == should
+    # end
   end
 
-  newproperty(:syslog_port, array_matching: :all) do
+  newproperty(:syslog_port) do
     validate do |value|
       # puppet, being puppet if it's an array, it passes each value of the array into this
       # validate function, so we just need to check that each thing is a string
@@ -59,20 +59,20 @@ Puppet::Type.newtype(:powercli_esx_syslog) do
     #   end
     # end
 
-    def should
-      sort_array(super)
-    end
+    # def should
+    #   sort_array(super)
+    # end
 
-    def should=(values)
-      super(sort_array(values))
-    end
+    # def should=(values)
+    #   super(sort_array(values))
+    # end
 
-    def insync?(is)
-      sort_array(is) == should
-    end
+    # def insync?(is)
+    #   sort_array(is) == should
+    # end
   end
 
-  newproperty(:syslog_protocol, array_matching: :all) do
+  newproperty(:syslog_protocol) do
     validate do |value|
       # puppet, being puppet if it's an array, it passes each value of the array into this
       # validate function, so we just need to check that each thing is a string
@@ -89,17 +89,17 @@ Puppet::Type.newtype(:powercli_esx_syslog) do
     #   end
     # end
 
-    def should
-      sort_array(super)
-    end
+    # def should
+    #   sort_array(super)
+    # end
 
-    def should=(values)
-      super(sort_array(values))
-    end
+    # def should=(values)
+    #   super(sort_array(values))
+    # end
 
-    def insync?(is)
-      sort_array(is) == should
-    end
+    # def insync?(is)
+    #   sort_array(is) == should
+    # end
   end
 
   ################################
