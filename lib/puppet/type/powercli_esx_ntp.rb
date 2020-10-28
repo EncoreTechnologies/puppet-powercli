@@ -22,7 +22,7 @@ Puppet::Type.newtype(:powercli_esx_ntp) do
         raise ArgumentError, "each ntp_server is expected to be a String, given: #{value.class.name}"
       end
     end
-    
+
     def sort_array(a)
       if a.nil?
         []
@@ -59,8 +59,8 @@ Puppet::Type.newtype(:powercli_esx_ntp) do
       unless value.is_a?(Hash)
         raise ArgumentError, "vcenter_connection is expected to be a Hash, given: #{value.class.name}"
       end
-      
-      ['server', 'username', 'password'].each do|key|
+
+      ['server', 'username', 'password'].each do |key|
         unless value.key?(key)
           raise ArgumentError, "vcenter_connection is missing key '#{key}'"
         end

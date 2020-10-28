@@ -1,28 +1,25 @@
 ---
 .gitignore:
   paths:
-    - .coverage
+    - .rerun.json
     - .librarian
     - .kitchen
     - .tmp
     - .bundle
-    - /cover/
-    - /ci/
+    - bolt.log
     - Puppetfile.lock
+    - modules
 .gitlab-ci.yml:
   # we don't use GitLab
   unmanaged: true
-# .travis.yml:
-#   # we keep our own .travis.yml because of integration testing
-#   unmanaged: true
-# appveyor.yml:
-#   # we don't use Appveyor
-#   unmanaged: true
+appveyor.yml:
+  # we don't use Appveyor
+  unmanaged: true
 Gemfile:
   required:
     ':development':
-      - gem: 'puppet-lint-absolute_classname-check'
-        version: '>= 1.0.0'
+      - gem: 'puppet-blacksmith'
+        version: '>= 5.0.0'
       - gem: 'puppet-lint-absolute_template_path'
         version: '>= 1.0.1'
       - gem: 'puppet-lint-alias-check'
@@ -45,14 +42,26 @@ Gemfile:
         version: '>= 0.3.0'
       - gem: 'puppet-lint-version_comparison-check'
         version: '>= 0.2.1'
-Rakefile:
-  extras:
-    - 'PuppetLint.configuration.absolute_classname_reverse = true'
+      - gem: 'r10k'
+        version: '>= 3.0.0'
+      # cri is needed by r10k, but due to a bug in the cri gem v2.15.7 it breaks r10k
+      # see: https://github.com/puppetlabs/r10k/issues/930
+      - gem: 'cri'
+        version: '2.15.6'
+      - gem: 'yaml-lint'
+        version: '>= 0.0.10'
+# Rakefile:
+#   extras:
+#     - "# exclude plans because puppet-syntax doesn't support them yet: https://github.com/voxpupuli/puppet-syntax/issues/95"
+#     - 'PuppetSyntax.exclude_paths = ["plans/**/*", "vendor/**/*"]'
 spec/spec_helper.rb:
   mock_with: ':rspec'
 .travis.yml:
-  deploy_to_forge:
-    enabled: true
-  user: encore
-  secure: "vSTtY4V1DYCk7nOGoPiy7KvgXalpUZ7JXpzjFF99X76YlgE1bHPjWT9pEoHq0pNhQlNW7nBE42xkGVeb9EJjzrmlG/HMFUz1VvQ+twHeAGBMWllzW4XkthwJ3BiLxwzdmf8WjGTbKAUNVMKi6t3N+98IobHIlINPdtuHPqRH6b3CwAp++xnkKcj8lgzcg8KrB7Th4pGcmzmBrDRhRyZcaSpUkDwHfBIIOo+QVw++iIAIYi93y6gnlXD/xTR144mdO6u/5QKCaD6MUxf8o1uWrP5w1iZNNLqLeM1QpHfpA4Ka/v3+eLqD0PLPfIA2LM0F3k6yz5cLhQ2gyMWlwfd+siaaUw2EM4qhmQVg1BTjYP6/uvf1/nCvTbEU5+7+izpp7t+pY0CMsNCKGsoGB1TrI5U93l07FqNxQ2kmfQ2bl6dYAO4qtpWLBNkv3mm+1nWF/eh/SlNmY6syO/tT+br6DruXGmISceEXcmkbZoLdDfs2e3hDCMeQgfeeqs1CvCXKl3hmzw8BkSaMZBPWhGDthF1lt8xFiZmiuLmZFrsG8avXpd/JPeH76X2ZqoWPT+Bzwou0S5nT5Pv7d1FYeR907TBNB3MGb+omrTcdSgW/wHY6EcXAa2yMoOynQ42mrNoeFaSM6rd3bDPyHWtmG1ciaRldCd/R9mT5kp7nXkcNvMA="
+  # we've converted over to GitHub actions
+  unmanaged: true
+# .travis.yml:
+#   deploy_to_forge:
+#     enabled: true
+#   user: encore
+#   secure: "vSTtY4V1DYCk7nOGoPiy7KvgXalpUZ7JXpzjFF99X76YlgE1bHPjWT9pEoHq0pNhQlNW7nBE42xkGVeb9EJjzrmlG/HMFUz1VvQ+twHeAGBMWllzW4XkthwJ3BiLxwzdmf8WjGTbKAUNVMKi6t3N+98IobHIlINPdtuHPqRH6b3CwAp++xnkKcj8lgzcg8KrB7Th4pGcmzmBrDRhRyZcaSpUkDwHfBIIOo+QVw++iIAIYi93y6gnlXD/xTR144mdO6u/5QKCaD6MUxf8o1uWrP5w1iZNNLqLeM1QpHfpA4Ka/v3+eLqD0PLPfIA2LM0F3k6yz5cLhQ2gyMWlwfd+siaaUw2EM4qhmQVg1BTjYP6/uvf1/nCvTbEU5+7+izpp7t+pY0CMsNCKGsoGB1TrI5U93l07FqNxQ2kmfQ2bl6dYAO4qtpWLBNkv3mm+1nWF/eh/SlNmY6syO/tT+br6DruXGmISceEXcmkbZoLdDfs2e3hDCMeQgfeeqs1CvCXKl3hmzw8BkSaMZBPWhGDthF1lt8xFiZmiuLmZFrsG8avXpd/JPeH76X2ZqoWPT+Bzwou0S5nT5Pv7d1FYeR907TBNB3MGb+omrTcdSgW/wHY6EcXAa2yMoOynQ42mrNoeFaSM6rd3bDPyHWtmG1ciaRldCd/R9mT5kp7nXkcNvMA="
 
