@@ -13,8 +13,7 @@ Puppet::Type.newtype(:powercli_esx_ntp) do
   end
 
   newproperty(:ntp_servers, array_matching: :all) do
-    desc 'The password to login to vcenter'
-
+    desc 'An array of NTP server FQDNs or IP addresses which will be used on the esx_host'
     validate do |value|
       # puppet, being puppet if it's an array, it passes each value of t he array into this
       # validate function, so we just need to check that each thing is a string
