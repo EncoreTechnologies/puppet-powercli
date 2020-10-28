@@ -1,10 +1,10 @@
 <%= @_connect %>
 
 # Add host to dvswitch
-Add-VDSwitchVMHost -VDSwitch '<%= @dvswitch_name %>' -VMHost '<%= @name %>'
+Add-VDSwitchVMHost -VDSwitch '<%= @dvswitch_name %>' -VMHost '<%= @esx_host %>'
 
 # Get the NIC we want as an uplink to dvswitch
-$Uplink = Get-VMHostNetworkAdapter -VMHost '<%= @name %>' -Physical -name '<%= @nic %>'
+$Uplink = Get-VMHostNetworkAdapter -VMHost '<%= @esx_host %>' -Physical -name '<%= @nic %>'
 
 # Assign uplink to dvswitch
 Get-VDSwitch -Name '<%= @dvswitch_name %>' | Add-VDSwitchPhysicalNetworkAdapter -VMHostPhysicalNic $Uplink -Confirm:$false
