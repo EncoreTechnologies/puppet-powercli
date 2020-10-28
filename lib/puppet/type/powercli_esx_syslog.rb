@@ -100,7 +100,7 @@ Puppet::Type.newtype(:powercli_esx_syslog) do
     def insync?(is)
       sort_array(is) == should
     end
-  end  
+  end
 
   ################################
   newparam(:vcenter_connection) do
@@ -117,7 +117,7 @@ Puppet::Type.newtype(:powercli_esx_syslog) do
       unless value.is_a?(Hash)
         raise ArgumentError, "vcenter_connection is expected to be a Hash, given: #{value.class.name}"
       end
-      ['server', 'username', 'password'].each do|key|
+      ['server', 'username', 'password'].each do |key|
         unless value.key?(key)
           raise ArgumentError, "vcenter_connection is missing key '#{key}'"
         end

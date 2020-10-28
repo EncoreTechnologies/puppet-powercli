@@ -2,7 +2,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), '..', 'powercli'))
 require 'ruby-pwsh'
 
 Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::PowerCLI) do
-  commands :powershell => 'powershell.exe'
+  commands powershell: 'powershell.exe'
 
   # always need to define this in our implementation classes
   mk_resource_methods
@@ -62,7 +62,6 @@ Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::
   # this flush method is called once at the end of the resource
   # and we're going to do our bulk write in here
   def flush_instance
-
     # if we are adding our changing our servers, just add them here
     if resource[:ensure] == :present
       cmd = <<-EOF
