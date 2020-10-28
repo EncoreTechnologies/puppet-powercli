@@ -1,5 +1,6 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'powercli'))
 require 'ruby-pwsh'
+require 'uri'
 
 Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::PowerCLI) do
   commands powershell: 'powershell.exe'
@@ -38,10 +39,14 @@ Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::
     cached_instances_set({})
 
     syslog_servers_hash.each do |esx_host, syslog_server_info|
+      # Example url: udp://192.168.1.10
+      uri = URI(syslog_server_info['Host'])
       cached_instances[esx_host] = {
         ensure: :present,
         esx_host: esx_host,
-        syslog_server_info: syslog_server_info,
+        syslog_server: uri.host,
+        syslog_protocol: uri.scheme,
+        syslog_port: syslog_server_info['Port'],
       }
     end
 
@@ -65,6 +70,7 @@ Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::
     # if we are adding our changing our servers, just add them here
     if resource[:ensure] == :present
       cmd = <<-EOF
+        # Example "udp://192.168.1.10:514"
         $syslog = "#{resource[:syslog_protocol]}://#{resource[:syslog_server]}:#{resource[:syslog_port]}"
         Set-VMHostSysLogServer -VMHost '#{resource[:esx_host]}' -SysLogServer $syslog
         EOF
