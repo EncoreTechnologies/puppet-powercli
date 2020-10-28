@@ -1,3 +1,5 @@
+require 'puppet_x/encore/powercli/helper'
+
 # This class is a "base" provider to use to implement your own custom providers here
 # at Encore.
 class Puppet::Provider::PowerCLI < Puppet::Provider
@@ -89,17 +91,16 @@ class Puppet::Provider::PowerCLI < Puppet::Provider
 
   # global cached instances across all resource instances
   def cached_instances
-    inst = PuppetX::PowerCLI::CachedInstances.instance
-    Puppet.debug("cached_instances - object id: #{inst.object_id}")
+    Puppet.debug("cached_instances - object id: #{PuppetX::PowerCLI::Helper.instance.object_id}")
     Puppet.debug("cached_instances - resource.type: #{resource.type}")
-    PuppetX::PowerCLI::CachedInstances.instance.cache[resource.type]
+    PuppetX::PowerCLI::Helper.instance.cached_instances[resource.type]
   end
 
   def cached_instances_set(inst)
     Puppet.debug("cached_instances= - inst object id: #{inst.object_id}")
     Puppet.debug("cached_instances= - resource.type: #{resource.type}")
-    PuppetX::PowerCLI::CachedInstances.instance.cache[resource.type] = inst
-    Puppet.debug("cached_instances= - end object id: #{PuppetX::PowerCLI::CachedInstances.instance.cache[resource.type].object_id}")
+    PuppetX::PowerCLI::Helper.instance.cached_instances[resource.type] = inst
+    Puppet.debug("cached_instances= - end object id: #{PuppetX::PowerCLI::Helper.instance.cached_instances[resource.type].object_id}")
   end
 
   # this method should retrieve an instance and return it as a hash
@@ -121,41 +122,20 @@ class Puppet::Provider::PowerCLI < Puppet::Provider
     raise NotImplementedError, 'flush_instance needs to be implemented by child providers'
   end
 
-  # running powershell from a self. methood
-  #   ps(cmd)[:stdout]
-  #
-  # running powershell from a normal methood
-  #   self.ps(cmd)[:stdout]
+  # Example, run raw powershell command:
+  #  ps(cmd)[:stdout]
   def ps(cmd)
-    @@ps ||= Pwsh::Manager.instance(Pwsh::Manager.powershell_path, Pwsh::Manager.powershell_args)
-    Puppet.debug("Running command: #{cmd}")
-    Puppet.debug("@@ps instance id: #{@@ps.object_id}")
-    # need to use [:stdout] from result
-    @@ps.execute(cmd)
+    # used cached powershell runtime, this saves a TON of processing
+    PuppetX::PowerCLI::Helper.instance.ps(cmd)
   end
 
-  def connect_cmd
-    # check if we have connected before (aka if we have a cached session)
-    if @@session_id.nil?
-      # our session is nil, so we need to conenct
-      session_cmd = <<-EOF
-$session = Connect-VIServer -Server '#{resource[:vcenter_connection]['server']}' -Username '#{resource[:vcenter_connection]['username']}' -Password '#{resource[:vcenter_connection]['password']}
-$session.SessionId
-EOF
-      resp = ps(session_cmd)
-      # remove quotes from the session id string, it returns us something in the format of:
-      #  "abc123"
-      # we strip because it returns us some new lines and white space in there as well
-      @@session_id = resp[:stdout].gsub(/"/, '').strip
-    end
-
-    # connect with our session from above for from some other connection attempt :)
-    <<-EOF
-Connect-VIServer -Server -Server '#{resource[:vcenter_connection]['server']}' -Session '#{@@session_id}' | Out-Null
-EOF
-  end
-
+  # Example, run a powercli powershell command, and prepend the "Connect-VIServer" to it
+  #  powercli_connect_exec(cmd)[:stdout]
   def powercli_connect_exec(cmd)
-    ps(connect_cmd + cmd)
+    # used cached powershell runtime AND used cached PowerCLI connection
+    # caching the powershell runtime is a huge savings, caching the PowerCLI connection
+    # is another huge savings, worth about 5-10s total per call
+    PuppetX::PowerCLI::Helper.instance.powercli_connect_exec(resource[:vcenter_connection],
+                                                             cmd)
   end
 end

@@ -1,5 +1,4 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'powercli'))
-require 'puppet_x/encore/powercli/cached_instances'
 require 'ruby-pwsh'
 
 Puppet::Type.type(:powercli_esx_ntp).provide(:api, parent: Puppet::Provider::PowerCLI) do
@@ -13,25 +12,29 @@ Puppet::Type.type(:powercli_esx_ntp).provide(:api, parent: Puppet::Provider::Pow
   def all_instances
     Puppet.debug("all_instances - cached instances is: #{cached_instances}")
     Puppet.debug("all_instances - cached instances object id: #{cached_instances.object_id}")
+    # return cache if it has been created, this means that this function will only need
+    # to be loaded once, returning all instances that exist of this resource in vsphere
+    # then, we can lookup our version by name/id/whatever. This saves a TON of processing
     return cached_instances unless cached_instances.nil?
+    
     # Want to return an array of instances
     #  each hash should have the same properties as the properties
     #  of this "type"
     #  remember the keys should be symbols, aka :ntp_servers not 'ntp_servers'
     # This is a tracking hash which will contain info about each host and NTP server relationships
     cmd = <<-EOF
-$ntp_servers_hash = @{}
-$hosts = Get-VMHost
-foreach($h in $hosts) {
-  $servers = Get-VMHostNtpServer -VMHost $h
-  if ($servers) {
-     $ntp_servers_hash[$h.Name] = @($servers)
-  } else {
-     $ntp_servers_hash[$h.Name] = @()
-  }
-}
-$ntp_servers_hash | ConvertTo-Json
-    EOF
+      $ntp_servers_hash = @{}
+      $hosts = Get-VMHost
+      foreach($h in $hosts) {
+        $servers = Get-VMHostNtpServer -VMHost $h
+        if ($servers) {
+           $ntp_servers_hash[$h.Name] = @($servers)
+        } else {
+           $ntp_servers_hash[$h.Name] = @()
+        }
+      }
+      $ntp_servers_hash | ConvertTo-Json
+      EOF
 
     ntpservers_stdout = powercli_connect_exec(cmd)[:stdout]
     # json parse expects a json string, powershell does not stdout with quotes
@@ -78,19 +81,19 @@ $ntp_servers_hash | ConvertTo-Json
   def flush_instance
     # delete all of the existing ones by default
     cmd = <<-EOF
-# The old / original NTP servers
-$OriginalNTPServers = Get-VMHostNtpServer -VMHost '#{resource[:esx_host]}'
-
-# Remove old NTP servers
-Remove-VMHostNtpServer -VMHost '#{resource[:esx_host]}' -NtpServer $OriginalNTPServers -confirm:$false
-    EOF
+      # The old / original NTP servers
+      $OriginalNTPServers = Get-VMHostNtpServer -VMHost '#{resource[:esx_host]}'
+      
+      # Remove old NTP servers
+      Remove-VMHostNtpServer -VMHost '#{resource[:esx_host]}' -NtpServer $OriginalNTPServers -confirm:$false
+      EOF
 
     # if we are adding our changing our servers, just add them here
     if resource[:ensure] == :present
       cmd += <<-EOF
-# Set the NTP servers we want
-Get-VMHost -name '#{resource[:esx_host]}' | Add-VMHostNtpServer -NtpServer #{resource[:ntp_servers].join(', ')}
-    EOF
+        # Set the NTP servers we want
+        Get-VMHost -name '#{resource[:esx_host]}' | Add-VMHostNtpServer -NtpServer #{resource[:ntp_servers].join(', ')}
+        EOF
     end
 
     output = powercli_connect_exec(cmd)
