@@ -91,16 +91,16 @@ class Puppet::Provider::PowerCLI < Puppet::Provider
 
   # global cached instances across all resource instances
   def cached_instances
-    Puppet.debug("cached_instances - object id: #{PuppetX::PowerCLI::Helper.instance.object_id}")
-    Puppet.debug("cached_instances - resource.type: #{resource.type}")
+    # Puppet.debug("cached_instances - object id: #{PuppetX::PowerCLI::Helper.instance.object_id}")
+    # Puppet.debug("cached_instances - resource.type: #{resource.type}")
     PuppetX::PowerCLI::Helper.instance.cached_instances[resource.type]
   end
 
   def cached_instances_set(inst)
-    Puppet.debug("cached_instances= - inst object id: #{inst.object_id}")
-    Puppet.debug("cached_instances= - resource.type: #{resource.type}")
+    # Puppet.debug("cached_instances= - inst object id: #{inst.object_id}")
+    # Puppet.debug("cached_instances= - resource.type: #{resource.type}")
     PuppetX::PowerCLI::Helper.instance.cached_instances[resource.type] = inst
-    Puppet.debug("cached_instances= - end object id: #{PuppetX::PowerCLI::Helper.instance.cached_instances[resource.type].object_id}")
+    # Puppet.debug("cached_instances= - end object id: #{PuppetX::PowerCLI::Helper.instance.cached_instances[resource.type].object_id}")
   end
 
   # this method should retrieve an instance and return it as a hash
