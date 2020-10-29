@@ -74,9 +74,9 @@ Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::
         $syslog = '#{resource[:syslog_protocol]}://#{resource[:syslog_server]}:#{resource[:syslog_port]}'
         Set-VMHostSysLogServer -VMHost '#{resource[:esx_host]}' -SysLogServer $syslog
         EOF
-    end
 
-    output = powercli_connect_exec(cmd)
-    raise "Error when executing command #{cmd}\n stdout = #{output[:stdout]} \n stderr = #{output[:stderr]}" unless output[:exitcode].zero?
+      output = powercli_connect_exec(cmd)
+      raise "Error when executing command #{cmd}\n stdout = #{output[:stdout]} \n stderr = #{output[:stderr]}" unless output[:exitcode].zero?
+    end
   end
 end
