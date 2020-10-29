@@ -14,92 +14,26 @@ Puppet::Type.newtype(:powercli_esx_syslog) do
 
   newproperty(:syslog_server) do
     validate do |value|
-      # puppet, being puppet if it's an array, it passes each value of the array into this
-      # validate function, so we just need to check that each thing is a string
       unless value.is_a?(String)
         raise ArgumentError, "each syslog_server is expected to be a String, given: #{value.class.name}"
       end
     end
-
-    # def sort_array(a)
-    #   if a.nil?
-    #     []
-    #   else
-    #     a.sort
-    #   end
-    # end
-
-    # def should
-    #   sort_array(super)
-    # end
-
-    # def should=(values)
-    #   super(sort_array(values))
-    # end
-
-    # def insync?(is)
-    #   sort_array(is) == should
-    # end
   end
 
   newproperty(:syslog_port) do
     validate do |value|
-      # puppet, being puppet if it's an array, it passes each value of the array into this
-      # validate function, so we just need to check that each thing is a string
       unless value.is_a?(Integer)
         raise ArgumentError, "each syslog_port is expected to be a Integer, given: #{value.class.name}"
       end
     end
-
-    # def sort_array(a)
-    #   if a.nil?
-    #     []
-    #   else
-    #     a.sort
-    #   end
-    # end
-
-    # def should
-    #   sort_array(super)
-    # end
-
-    # def should=(values)
-    #   super(sort_array(values))
-    # end
-
-    # def insync?(is)
-    #   sort_array(is) == should
-    # end
   end
 
   newproperty(:syslog_protocol) do
     validate do |value|
-      # puppet, being puppet if it's an array, it passes each value of the array into this
-      # validate function, so we just need to check that each thing is a string
       unless value.is_a?(String)
         raise ArgumentError, "syslog_protocol is expected to be a String, given: #{value.class.name}"
       end
     end
-
-    # def sort_array(a)
-    #   if a.nil?
-    #     []
-    #   else
-    #     a.sort
-    #   end
-    # end
-
-    # def should
-    #   sort_array(super)
-    # end
-
-    # def should=(values)
-    #   super(sort_array(values))
-    # end
-
-    # def insync?(is)
-    #   sort_array(is) == should
-    # end
   end
 
   ################################
