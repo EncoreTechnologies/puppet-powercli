@@ -12,7 +12,7 @@ Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::
   def all_instances
     # Puppet.debug("all_instances - cached instances is: #{cached_instances}")
     # Puppet.debug("all_instances - cached instances object id: #{cached_instances.object_id}")
-    Puppet.debug("test is: #{test}")
+    
     # return cache if it has been created, this means that this function will only need
     # to be loaded once, returning all instances that exist of this resource in vsphere
     # then, we can lookup our version by name/id/whatever. This saves a TON of processing
@@ -43,6 +43,7 @@ Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::
 
 
     syslog_servers_hash.each do |esx_host, syslog_server_info|
+      Puppet.debug("test is: #{test}")
       test = syslog_server_info['Host']
       # Example url: udp://192.168.1.10
       uri = URI(syslog_server_info['Host'])
