@@ -10,8 +10,8 @@ Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::
 
   # global cached instances across all resource instances
   def all_instances
-    Puppet.debug("all_instances - cached instances is: #{cached_instances}")
-    Puppet.debug("all_instances - cached instances object id: #{cached_instances.object_id}")
+    # Puppet.debug("all_instances - cached instances is: #{cached_instances}")
+    # Puppet.debug("all_instances - cached instances object id: #{cached_instances.object_id}")
     Puppet.debug("test is: #{test}")
     # return cache if it has been created, this means that this function will only need
     # to be loaded once, returning all instances that exist of this resource in vsphere
