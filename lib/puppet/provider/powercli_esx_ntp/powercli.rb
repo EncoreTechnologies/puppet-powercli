@@ -9,8 +9,8 @@ Puppet::Type.type(:powercli_esx_ntp).provide(:api, parent: Puppet::Provider::Pow
 
   # global cached instances across all resource instances
   def all_instances
-    Puppet.debug("all_instances - cached instances is: #{cached_instances}")
-    Puppet.debug("all_instances - cached instances object id: #{cached_instances.object_id}")
+    #Puppet.debug("all_instances - cached instances is: #{cached_instances}")
+    #Puppet.debug("all_instances - cached instances object id: #{cached_instances.object_id}")
     # return cache if it has been created, this means that this function will only need
     # to be loaded once, returning all instances that exist of this resource in vsphere
     # then, we can lookup our version by name/id/whatever. This saves a TON of processing
@@ -50,7 +50,7 @@ Puppet::Type.type(:powercli_esx_ntp).provide(:api, parent: Puppet::Provider::Pow
     # type.
     # the key, should be the title/namevar so we can do a lookup in our
     # read_instance function
-    Puppet.debug('all_instances - hopefully calling setter method')
+    #Puppet.debug('all_instances - hopefully calling setter method')
     cached_instances_set({})
     ntpservers_hash.each do |esx_host, ntp_servers_array|
       cached_instances[esx_host] = {
@@ -59,8 +59,8 @@ Puppet::Type.type(:powercli_esx_ntp).provide(:api, parent: Puppet::Provider::Pow
         ntp_servers: ntp_servers_array,
       }
     end
-    Puppet.debug("all_instances - cached instances is at end: #{cached_instances}")
-    Puppet.debug("all_instances - cached instances object_id at end: #{cached_instances.object_id}")
+    #Puppet.debug("all_instances - cached instances is at end: #{cached_instances}")
+    #Puppet.debug("all_instances - cached instances object_id at end: #{cached_instances.object_id}")
     cached_instances
   end
 
