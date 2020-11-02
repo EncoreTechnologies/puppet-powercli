@@ -29,13 +29,15 @@ Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::
             $syslog_servers_hash[$h.Name] = @()
         }
       }
-      $xyzsyslog_servers_hash | ConvertTo-Json
+      $syslog_servers_hash | ConvertTo-Json
       EOF
 
     syslog_servers_stdout = powercli_connect_exec(cmd)[:stdout]
 
     Puppet.debug("syslog_servers_stdout is: #{syslog_servers_stdout}")
     # Verify we got a non-null return from powershell
+    cached_instances_set({})
+
     unless syslog_servers_stdout.empty?
       syslog_servers_hash = JSON.parse(syslog_servers_stdout)
       cached_instances_set({})
@@ -52,14 +54,9 @@ Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::
           syslog_protocol: uri.scheme,
           syslog_port: syslog_server_info['Port'],
         }
-        cached_instances
       end
-    else
-      {
-        # Fail this resource because we got no hash return from Powershell
-        raise Puppet::Error, "POSH JSON returned null, failing!"
-      }
     end
+    cached_instances
   end
 
   def read_instance
