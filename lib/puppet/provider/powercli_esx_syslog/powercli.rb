@@ -39,14 +39,13 @@ Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::
 
     cached_instances_set({})
 
-    test2 = syslog_server_hash
-    Puppet.debug("test2 is: #{test2}")
-    Puppet.info('test2 is: ${test2}')
+    Puppet.debug("syslog_servers_hash is: #{syslog_servers_hash}")
+    Puppet.info("syslog_servers_hash is: #{syslog_servers_hash}")
 
     syslog_servers_hash.each do |esx_host, syslog_server_info|
       test = syslog_server_info['Host']
       Puppet.debug("test is: #{test}")
-      Puppet.info('test is: ${test}')
+      Puppet.info("test is: #{test}")
       # Example url: udp://192.168.1.10
       uri = URI(syslog_server_info['Host'])
       cached_instances[esx_host] = {
