@@ -57,7 +57,7 @@ Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::
     else
       {
         # Fail this resource because we got no hash return from Powershell
-        raise "POSH JSON returned null, failing!"
+        raise Puppet::Error, "POSH JSON returned null, failing!"
       }
     end
   end
