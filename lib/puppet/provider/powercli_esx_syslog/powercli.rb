@@ -39,6 +39,10 @@ Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::
 
     cached_instances_set({})
 
+    test2 = syslog_server_hash
+    Puppet.debug("test2 is: #{test2}")
+    Puppet.info('test2 is: ${test2}')
+
     syslog_servers_hash.each do |esx_host, syslog_server_info|
       test = syslog_server_info['Host']
       Puppet.debug("test is: #{test}")
