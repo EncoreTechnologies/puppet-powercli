@@ -60,11 +60,13 @@ Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::
   def read_instance
     if all_instances.key?(resource[:esx_host])
       all_instances[resource[:esx_host]]
+      test = all_instances[resource[:esx_host]]
     else
       {
         ensure: :absent,
         esx_host: resource[:esx_host],
       }
+      Puppet.debug("read_instances test is: #{test}")
     end
   end
 
