@@ -41,10 +41,10 @@ Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::
 
     Puppet.debug("syslog_servers_hash is: #{syslog_servers_hash}")
 
-    syslog_servers_hash.each do |esx_host, syslog_server_info|
-      test = syslog_server_info[0]
-      # This seems to never print because it is inside a .each lambda
-      Puppet.debug("test is: #{test}")
+    syslog_servers_hash.each do |esx_host, syslog_server_info_array|
+      # Because the syslog_server_info_array has multiple elements (Host and Port)
+      # It will return as an array.
+      syslog_server_info = syslog_server_info_array[0]
       # Example url: udp://192.168.1.10
       uri = URI(syslog_server_info['Host'])
       cached_instances[esx_host] = {
