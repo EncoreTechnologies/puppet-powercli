@@ -34,6 +34,7 @@ Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::
 
     syslog_servers_stdout = powercli_connect_exec(cmd)[:stdout]
 
+    Puppet.debug("syslog_servers_stdout is: #{syslog_servers_stdout}")
     # Verify we got a non-null return from powershell
     unless syslog_servers_stdout.nil?
       syslog_servers_hash = JSON.parse(syslog_servers_stdout)
