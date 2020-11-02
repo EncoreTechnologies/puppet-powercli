@@ -29,7 +29,7 @@ Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::
             $syslog_servers_hash[$h.Name] = @()
         }
       }
-      $syslog_servers_hash | ConvertTo-Json
+      $xyzsyslog_servers_hash | ConvertTo-Json
       EOF
 
     syslog_servers_stdout = powercli_connect_exec(cmd)[:stdout]
