@@ -34,8 +34,6 @@ Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::
 
     syslog_servers_stdout = powercli_connect_exec(cmd)[:stdout]
 
-    Puppet.debug("syslog_servers_stdout is: #{syslog_servers_stdout}")
-    # Verify we got a non-null return from powershell
     cached_instances_set({})
 
     unless syslog_servers_stdout.empty?
@@ -70,13 +68,12 @@ Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::
     end
   end
 
-  # this flush method is called once at the end of the resource
-  # and we're going to do our bulk write in here
+  # this flush method is called once at the end of the resource run
   def flush_instance
-    # if we are adding our changing our servers, just add them here
+    # if we are adding our changing our syslog servers
     if resource[:ensure] == :present
       cmd = <<-EOF
-        # Example "udp://192.168.1.10:514"
+        # Example $syslog: "udp://192.168.1.10:514"
         $syslog = '#{resource[:syslog_protocol]}://#{resource[:syslog_server]}:#{resource[:syslog_port]}'
         Set-VMHostSysLogServer -VMHost '#{resource[:esx_host]}' -SysLogServer $syslog
         EOF
