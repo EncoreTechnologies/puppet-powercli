@@ -65,6 +65,8 @@ Puppet::Type.type(:powercli_esx_vs_portgroup).provide(:api, parent: Puppet::Prov
       instance = all_instances[resource[:esx_host]]
       instance[:title] = resource[:title]
       instance
+
+      Puppet.debug("instance is: #{instance}")
     else
       {
         ensure: :absent,
