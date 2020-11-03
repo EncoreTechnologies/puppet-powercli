@@ -21,7 +21,7 @@ Puppet::Type.type(:powercli_esx_vs_portgroup).provide(:api, parent: Puppet::Prov
       $portgroup_hash = @{}
       $hosts = #{powercli_get_online_hosts}
       foreach($h in $hosts) {
-        $pg = Get-VirtualSwitch -Host $h -Standard -Name #{resource[:esx_host]} | Get-VirtualPortGroup -Name #{resource[:portgroup]}
+        $pg = Get-VirtualSwitch -Host $h -Standard -Name #{resource[:vswitch_name]} | Get-VirtualPortGroup -Name #{resource[:portgroup]}
         $obj_hash = @{}
         $obj_hash.Add('portgroup', $pg.Name)
         $obj_hash.Add('vlan', $pg.VLanId)
@@ -38,6 +38,8 @@ Puppet::Type.type(:powercli_esx_vs_portgroup).provide(:api, parent: Puppet::Prov
     portgroups_stdout = powercli_connect_exec(cmd)[:stdout]
 
     portgroups_hash = JSON.parse(portgroups_stdout)
+
+    Puppet.debug("portgroup hash is: #{portgroups_hash}")
 
     # create instance hash - this contains info about ONE host at a time
     # the values should match the data "shape" (ie have the same fields) as our
