@@ -49,6 +49,9 @@ Puppet::Type.type(:powercli_esx_vs_portgroup).provide(:api, parent: Puppet::Prov
     Puppet.debug('all_instances - hopefully calling setter method')
     cached_instances_set({})
     portgroups_hash.each do |esx_host, pg_hash|
+
+      Puppet.debug("pg_hash is #{pg_hash}")
+
       cached_instances[esx_host] = {
         ensure: :present,
         esx_host: esx_host,
