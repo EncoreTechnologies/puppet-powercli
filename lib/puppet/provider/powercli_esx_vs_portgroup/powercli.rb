@@ -21,7 +21,7 @@ Puppet::Type.type(:powercli_esx_vs_portgroup).provide(:api, parent: Puppet::Prov
       $portgroup_hash = @{}
       $hosts = #{powercli_get_online_hosts}
       foreach($h in $hosts) {
-        $pg = Get-VirtualSwitch -Host $h -Standard -Name #{vswitch_name} | Get-VirtualPortGroup -Name #{portgroup}
+        $pg = Get-VirtualSwitch -Host $h -Standard -Name #{resource[:esx_host]} | Get-VirtualPortGroup -Name #{resource[:portgroup]}
         $obj_hash = @{}
         $obj_hash.Add('portgroup', $pg.Name)
         $obj_hash.Add('vlan', $pg.VLanId)
