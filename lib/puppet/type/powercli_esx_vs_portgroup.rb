@@ -31,8 +31,8 @@ Puppet::Type.newtype(:powercli_esx_vs_portgroup) do
   end
 
   newproperty(:portgroup) do
+    desc 'Name of the portgroup which will be managed on the esx_host'
     validate do |value|
-      desc 'Name of the portgroup which will be managed on the esx_host'
       unless value.is_a?(String)
         raise ArgumentError, "portgroup is expected to be a String, given: #{value.class.name}"
       end
