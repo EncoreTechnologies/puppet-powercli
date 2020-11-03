@@ -3,7 +3,7 @@ Puppet::Type.newtype(:powercli_esx_vs_portgroup) do
 
   ensurable
 
-  newparam(:esx_host) do
+  newparam(:esx_host, namevar: true) do
     desc 'The name of the esx host in which the standard vswitch will be managed on'
     validate do |value|
       unless value.is_a?(String)
