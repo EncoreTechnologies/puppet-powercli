@@ -48,13 +48,13 @@ Puppet::Type.type(:powercli_esx_vs_portgroup).provide(:api, parent: Puppet::Prov
     # read_instance function
     Puppet.debug('all_instances - hopefully calling setter method')
     cached_instances_set({})
-    portgroups_hash.each do |esx_host, portgroups_hash|
+    portgroups_hash.each do |esx_host, pg_hash|
       cached_instances[esx_host] = {
         ensure: :present,
         esx_host: esx_host,
-        vswitch_name: portgroups_hash['vswitch_name'],
-        vlan: portgroups_hash['vlan'],
-        portgroup: portgroups_hash['portgroup'],
+        vswitch_name: pg_hash['vswitch_name'],
+        vlan: pg_hash['vlan'],
+        portgroup: pg_hash['portgroup'],
       }
     end
     Puppet.debug("all_instances - cached instances is at end: #{cached_instances}")
