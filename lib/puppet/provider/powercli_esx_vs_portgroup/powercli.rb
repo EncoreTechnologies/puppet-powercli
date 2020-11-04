@@ -21,7 +21,9 @@ Puppet::Type.type(:powercli_esx_vs_portgroup).provide(:api, parent: Puppet::Prov
       $portgroup_hash = @{}
       $hosts = #{powercli_get_online_hosts}
       foreach($h in $hosts) {
-        $pg = Get-VirtualSwitch -Host $h -Standard -Name #{resource[:vswitch_name]} | Get-VirtualPortGroup -Name #{resource[:portgroup]}
+        # We silently continue on errors otherwise PowerCLI creates an error if the
+        # portgroup does not exist on the host which pollutes our $portgroup_hash return object
+        $pg = Get-VirtualSwitch -Host $h -Standard -Name #{resource[:vswitch_name]} | Get-VirtualPortGroup -Name #{resource[:portgroup]} -ErrorAction SilentlyContinue
         if ($pg) {
           $obj_hash = @{}
           $obj_hash.Add('portgroup', $pg.Name)
