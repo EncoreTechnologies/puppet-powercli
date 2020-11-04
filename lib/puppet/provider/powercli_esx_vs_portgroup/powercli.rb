@@ -31,6 +31,7 @@ Puppet::Type.type(:powercli_esx_vs_portgroup).provide(:api, parent: Puppet::Prov
           $obj_hash.Add('vswitch_name', $pg.VirtualSwitchName)
           $portgroup_hash[$h.Name] = @($obj_hash)
         } else {
+          # create empty hashtable
           $obj_hash = @{}
           $portgroup_hash[$h.Name] = @($obj_hash)
         }
@@ -38,28 +39,14 @@ Puppet::Type.type(:powercli_esx_vs_portgroup).provide(:api, parent: Puppet::Prov
       $portgroup_hash | ConvertTo-Json
       EOF
 
-    Puppet.debug("cmd is: #{cmd}")
     portgroups_stdout = powercli_connect_exec(cmd)[:stdout]
-
-    Puppet.debug("Current host: #{resource[:esx_host]}")
-    Puppet.debug("portgroups_stdout: #{portgroups_stdout}")
-    # create instance hash - this contains info about ONE host at a time
-    # the values should match the data "shape" (ie have the same fields) as our
-    # type.
-    # the key, should be the title/namevar so we can do a lookup in our
-    # read_instance function
-    Puppet.debug('all_instances - hopefully calling setter method')
-
 
     unless portgroups_stdout.empty?
       portgroups_hash = JSON.parse(portgroups_stdout)
-      Puppet.debug("portgroup hash is: #{portgroups_hash}")
       cached_instances_set({})
       portgroups_hash.each do |esx_host, pg_array|
-
-        Puppet.debug("on #{esx_host} pg_array is: #{pg_array}")
+        # Extracting hash from array object
         pg_hash = pg_array[0]
-        Puppet.debug("on #{esx_host} pg_hash is: #{pg_hash}")
         cached_instances[esx_host] = {
           ensure: :present,
           esx_host: esx_host,
