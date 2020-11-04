@@ -37,6 +37,7 @@ Puppet::Type.type(:powercli_esx_vs_portgroup).provide(:api, parent: Puppet::Prov
       $portgroup_hash | ConvertTo-Json
       EOF
 
+    Puppet.debug("cmd is: #{cmd}")
     portgroups_stdout = powercli_connect_exec(cmd)[:stdout]
 
     Puppet.debug("Current host: #{resource[:esx_host]}")
