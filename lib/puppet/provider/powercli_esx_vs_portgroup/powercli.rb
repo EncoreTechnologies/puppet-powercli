@@ -82,7 +82,7 @@ Puppet::Type.type(:powercli_esx_vs_portgroup).provide(:api, parent: Puppet::Prov
 
     # if we are adding our changing our servers, just add them here
     if resource[:ensure] == :present
-      cmd += <<-EOF
+      cmd = <<-EOF
         # Create the portgroup we want on the vswitch we want it on
         Get-VirtualSwitch -VMHost '#{resource[:esx_host]}' -Name '#{resource[:vswitch_name]}' -Standard | New-VirtualPortgroup -Name '#{resource[:portgroup]}' -VLanID #{resource[:vlan]}
         EOF
