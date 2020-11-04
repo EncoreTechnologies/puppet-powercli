@@ -37,6 +37,8 @@ Puppet::Type.type(:powercli_esx_vs_portgroup).provide(:api, parent: Puppet::Prov
 
     portgroups_stdout = powercli_connect_exec(cmd)[:stdout]
 
+    Puppet.debug("Current host: #{resource[:esx_host]}")
+    Puppet.debug("portgroups_stdout: #{portgroups_stdout}")
     # create instance hash - this contains info about ONE host at a time
     # the values should match the data "shape" (ie have the same fields) as our
     # type.
