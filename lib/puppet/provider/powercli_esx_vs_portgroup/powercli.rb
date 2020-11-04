@@ -75,7 +75,6 @@ Puppet::Type.type(:powercli_esx_vs_portgroup).provide(:api, parent: Puppet::Prov
   # this flush method is called once at the end of the resource
   # and we're going to do our bulk write in here
   def flush_instance
-
     # if we are adding our changing our servers, just add them here
     if resource[:ensure] == :present
       cmd = <<-EOF
