@@ -22,14 +22,14 @@ Puppet::Type.type(:powercli_esx_vs_portgroup).provide(:api, parent: Puppet::Prov
       $hosts = #{powercli_get_online_hosts}
       foreach($h in $hosts) {
         $pg = Get-VirtualSwitch -Host $h -Standard -Name #{resource[:vswitch_name]} | Get-VirtualPortGroup -Name #{resource[:portgroup]}
-        $obj_hash = @{}
-        $obj_hash.Add('portgroup', $pg.Name)
-        $obj_hash.Add('vlan', $pg.VLanId)
-        $obj_hash.Add('vswitch_name', $pg.VirtualSwitchName)
         if ($pg) {
-           $portgroup_hash[$h.Name] = @($obj_hash)
+          $obj_hash = @{}
+          $obj_hash.Add('portgroup', $pg.Name)
+          $obj_hash.Add('vlan', $pg.VLanId)
+          $obj_hash.Add('vswitch_name', $pg.VirtualSwitchName)
+          $portgroup_hash[$h.Name] = @($obj_hash)
         } else {
-           $portgroup_hash[$h.Name] = @()
+          $portgroup_hash[$h.Name] = @()
         }
       }
       $portgroup_hash | ConvertTo-Json
