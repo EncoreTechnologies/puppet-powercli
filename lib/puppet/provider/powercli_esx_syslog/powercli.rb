@@ -70,7 +70,7 @@ Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::
   # this flush method is called once at the end of the resource run
   def flush_instance
     # if we are adding our changing our syslog servers
-    if resource[:ensure] == :present
+    return unless if resource[:ensure] == :present
       cmd = <<-EOF
         # Example $syslog: "udp://192.168.1.10:514"
         $syslog = '#{resource[:syslog_protocol]}://#{resource[:syslog_server]}:#{resource[:syslog_port]}'
