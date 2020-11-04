@@ -37,10 +37,6 @@ Puppet::Type.type(:powercli_esx_vs_portgroup).provide(:api, parent: Puppet::Prov
 
     portgroups_stdout = powercli_connect_exec(cmd)[:stdout]
 
-    portgroups_hash = JSON.parse(portgroups_stdout)
-
-    Puppet.debug("portgroup hash is: #{portgroups_hash}")
-
     # create instance hash - this contains info about ONE host at a time
     # the values should match the data "shape" (ie have the same fields) as our
     # type.
@@ -49,7 +45,9 @@ Puppet::Type.type(:powercli_esx_vs_portgroup).provide(:api, parent: Puppet::Prov
     Puppet.debug('all_instances - hopefully calling setter method')
 
 
-    unless syslog_servers_stdout.empty?
+    unless portgroups_stdout.empty?
+      portgroups_hash = JSON.parse(portgroups_stdout)
+      Puppet.debug("portgroup hash is: #{portgroups_hash}")
       cached_instances_set({})
       portgroups_hash.each do |esx_host, pg_array|
         pg_hash = pg_array[0]
