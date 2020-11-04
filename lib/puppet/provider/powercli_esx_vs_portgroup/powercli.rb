@@ -31,7 +31,8 @@ Puppet::Type.type(:powercli_esx_vs_portgroup).provide(:api, parent: Puppet::Prov
           $obj_hash.Add('vswitch_name', $pg.VirtualSwitchName)
           $portgroup_hash[$h.Name] = @($obj_hash)
         } else {
-          $portgroup_hash[$h.Name] = @()
+          $obj_hash = @{}
+          $portgroup_hash[$h.Name] = @($obj_hash)
         }
       }
       $portgroup_hash | ConvertTo-Json
