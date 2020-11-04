@@ -47,16 +47,20 @@ Puppet::Type.type(:powercli_esx_vs_portgroup).provide(:api, parent: Puppet::Prov
     # the key, should be the title/namevar so we can do a lookup in our
     # read_instance function
     Puppet.debug('all_instances - hopefully calling setter method')
-    cached_instances_set({})
-    portgroups_hash.each do |esx_host, pg_array|
-      pg_hash = pg_array[0]
-      cached_instances[esx_host] = {
-        ensure: :present,
-        esx_host: esx_host,
-        vswitch_name: pg_hash['vswitch_name'],
-        vlan: pg_hash['vlan'],
-        portgroup: pg_hash['portgroup'],
-      }
+
+
+    unless syslog_servers_stdout.empty?
+      cached_instances_set({})
+      portgroups_hash.each do |esx_host, pg_array|
+        pg_hash = pg_array[0]
+        cached_instances[esx_host] = {
+          ensure: :present,
+          esx_host: esx_host,
+          vswitch_name: pg_hash['vswitch_name'],
+          vlan: pg_hash['vlan'],
+          portgroup: pg_hash['portgroup'],
+        }
+      end
     end
     Puppet.debug("all_instances - cached instances is at end: #{cached_instances}")
     Puppet.debug("all_instances - cached instances object_id at end: #{cached_instances.object_id}")
