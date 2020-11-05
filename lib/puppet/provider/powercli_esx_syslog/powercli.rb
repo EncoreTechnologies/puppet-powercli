@@ -71,12 +71,12 @@ Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::
   def flush_instance
     # if we are adding our changing our syslog servers
     return unless resource[:ensure] == :present
-      cmd = <<-EOF
-      # Example $syslog: "udp://192.168.1.10:514"
-      $syslog = '#{resource[:syslog_protocol]}://#{resource[:syslog_server]}:#{resource[:syslog_port]}'
-      Set-VMHostSysLogServer -VMHost '#{resource[:esx_host]}' -SysLogServer $syslog
-      EOF
-      output = powercli_connect_exec(cmd)
-      raise "Error when executing command #{cmd}\n stdout = #{output[:stdout]} \n stderr = #{output[:stderr]}" unless output[:exitcode].zero?
+    cmd = <<-EOF
+    # Example $syslog: "udp://192.168.1.10:514"
+    $syslog = '#{resource[:syslog_protocol]}://#{resource[:syslog_server]}:#{resource[:syslog_port]}'
+    Set-VMHostSysLogServer -VMHost '#{resource[:esx_host]}' -SysLogServer $syslog
+    EOF
+    output = powercli_connect_exec(cmd)
+    raise "Error when executing command #{cmd}\n stdout = #{output[:stdout]} \n stderr = #{output[:stderr]}" unless output[:exitcode].zero?
   end
 end
