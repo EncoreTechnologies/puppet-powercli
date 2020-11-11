@@ -73,6 +73,6 @@ define powercli::esx::dvs_add_hosts (
       onlyif   => template('powercli/powercli_esx_dvs_add_hosts_onlyif.ps1.erb'),
     }
     $onlyif = template('powercli/powercli_esx_dvs_add_hosts_onlyif.ps1.erb')
-    notify{ "${esx_host} - ${nic} onlyif is: ${onlyif}" : }
+    #notify{ "${esx_host} - ${nic} onlyif is: ${onlyif}" : }
   }
 }
