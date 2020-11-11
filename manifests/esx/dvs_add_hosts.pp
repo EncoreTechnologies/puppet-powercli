@@ -74,6 +74,6 @@ define powercli::esx::dvs_add_hosts (
     # }
     $onlyif = template('powercli/powercli_esx_dvs_add_hosts_onlyif.ps1.erb')
     notify{ "host ${esx_host} needs ${nic} connected on ${dvswitch_name}" : }
-    notify{ "${esx_host} - ${nic} test is: ${test}" : }
+    notify{ "${esx_host} - ${nic} onlyif is: ${onlyif}" : }
   }
 }
