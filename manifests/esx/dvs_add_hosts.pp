@@ -67,13 +67,12 @@ define powercli::esx::dvs_add_hosts (
   # For each phyysical nic to be added to the dvswitch..
   $nics.each | $nic | {
     # Add the current $nic
-    # exec { "${name}: add ${nic} to ${dvswitch_name}":
-    #   command  => template('powercli/powercli_esx_dvs_add_hosts.ps1.erb'),
-    #   provider => 'powershell',
-    #   onlyif   => template('powercli/powercli_esx_dvs_add_hosts_onlyif.ps1.erb'),
-    # }
+    exec { "${name}: add ${nic} to ${dvswitch_name}":
+      command  => template('powercli/powercli_esx_dvs_add_hosts.ps1.erb'),
+      provider => 'powershell',
+      onlyif   => template('powercli/powercli_esx_dvs_add_hosts_onlyif.ps1.erb'),
+    }
     $onlyif = template('powercli/powercli_esx_dvs_add_hosts_onlyif.ps1.erb')
-    notify{ "host ${esx_host} needs ${nic} connected on ${dvswitch_name}" : }
     notify{ "${esx_host} - ${nic} onlyif is: ${onlyif}" : }
   }
 }
