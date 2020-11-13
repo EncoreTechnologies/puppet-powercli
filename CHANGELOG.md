@@ -1,6 +1,11 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## v0.1.2 (2020-11-13)
+
+- Simplified dvs_add_hosts resource. It will no longer take into consideration defaults and other complexities. These complexities are to be handed within the puppet profile which calls this resource.
+
+  Contributed by Greg Perry (@gperry2011)
 
 ## Development
 
