@@ -12,7 +12,7 @@ Puppet::Functions.create_function(:'powercli::hosts_status') do
   #         Hosts that have a connection status of 'Disconnected' or 'NotResponding' will be
   #         marked as 'offline', otherwise they will be returned as 'online'.
   dispatch :hosts_status do
-    required_param 'Powercli::Connection' :connection
+    required_param 'Powercli::Connection', :connection
     optional_param 'Array[String]', :hosts
     return_type "Hash[String, Enum['online', 'offline']"
   end
