@@ -1,4 +1,4 @@
-require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'puppet_x', 'encore', 'powercli', 'helper'))
+require 'rbvmomi'
 
 # Returns a hash of hosts along with their connection status
 # Note: this uses PowerCLI under the hood, so it should be run as a deferred function
@@ -16,21 +16,26 @@ Puppet::Functions.create_function(:'powercli::hosts_status') do
   end
 
   def hosts_status(connection, hosts = nil)
-    cmd = <<-EOF
-      $hosts_list = Get-VMHost
-      $results = @{}
-      foreach ($host in $hosts_list) {
-        $results[$host.Name] = $host.ConnectionState
-      }
-      $results | ConvertTo-Json
-      EOF
-    resp = PuppetX::PowerCLI::Helper.instance.powercli_connect_exec(connection, cmd)
-    hosts_hash = JSON.parse(resp[:stdout])
-    if hosts
-      # only return the hosts that the user asked for
-      hosts_hash.select { |k, _v| hosts.include?(k) }
-    else
-      hosts_hash
+    credentials = {
+      host: connection['server'],
+      user: connection['username'],
+      password: connection['password'],
+      insecure: true
+    }
+    vim = RbVmomi::VIM.connect(credentials)
+
+    # recursive find/grep to find all ESX hosts
+    # Type list: https://code.vmware.com/apis/196/vsphere
+    query = {
+      container: vim.rootFolder,
+      type: ['HostSystem'],
+      recursive: true
+    }
+    host_list = vim.serviceContent.viewManager.CreateContainerView(query).view
+    results = {}
+    host_list.map do |host|
+      results[host.name] = host.runtime.connectionState
     end
+    results
   end
 end
