@@ -12,7 +12,7 @@ Puppet::Functions.create_function(:'powercli::hosts_status') do
   dispatch :hosts_status do
     required_param 'Powercli::Connection', :connection
     optional_param 'Array[String]', :hosts
-    return_type "Hash[String, Enum['online', 'offline']"
+    return_type "Hash[String, Enum['online', 'offline']]"
   end
 
   def hosts_status(connection, hosts = nil)
