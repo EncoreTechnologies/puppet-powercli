@@ -2,8 +2,6 @@ require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'pu
 
 # Returns a hash of hosts along with their connection status
 # Note: this uses PowerCLI under the hood, so it should be run as a deferred function
-#
-# 
 Puppet::Functions.create_function(:'powercli::hosts_status') do
   # @param hosts Explicit list of hosts to retrieve status for.
   #              If not specified all hosts that exist in the vCenter will be returned
@@ -30,7 +28,7 @@ Puppet::Functions.create_function(:'powercli::hosts_status') do
     hosts_hash = JSON.parse(resp[:stdout])
     if hosts
       # only return the hosts that the user asked for
-      hosts_hash.select { |k, v| hosts.include?(k) }
+      hosts_hash.select { |k, _v| hosts.include?(k) }
     else
       hosts_hash
     end
