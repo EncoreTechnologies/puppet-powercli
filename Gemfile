@@ -28,7 +28,7 @@ group :development do
   gem "puppet-module-posix-dev-r#{minor_version}", '~> 0.4',                   require: false, platforms: [:ruby]
   gem "puppet-module-win-default-r#{minor_version}", '~> 0.4',                 require: false, platforms: [:mswin, :mingw, :x64_mingw]
   gem "puppet-module-win-dev-r#{minor_version}", '~> 0.4',                     require: false, platforms: [:mswin, :mingw, :x64_mingw]
-  gem "puppet-lint-absolute_classname-check", '>= 1.0.0',                      require: false
+  gem "puppet-blacksmith", '>= 5.0.0',                                         require: false
   gem "puppet-lint-absolute_template_path", '>= 1.0.1',                        require: false
   gem "puppet-lint-alias-check", '>= 0.1.1',                                   require: false
   gem "puppet-lint-classes_and_types_beginning_with_digits-check", '>= 0.1.2', require: false
@@ -40,6 +40,9 @@ group :development do
   gem "puppet-lint-trailing_comma-check", '>= 0.3.2',                          require: false
   gem "puppet-lint-unquoted_string-check", '>= 0.3.0',                         require: false
   gem "puppet-lint-version_comparison-check", '>= 0.2.1',                      require: false
+  gem "r10k", '>= 3.0.0',                                                      require: false
+  gem "cri", '2.15.6',                                                         require: false
+  gem "yaml-lint", '>= 0.0.10',                                                require: false
 end
 
 puppet_version = ENV['PUPPET_GEM_VERSION']
