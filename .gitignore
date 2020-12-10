@@ -25,11 +25,11 @@
 .project
 .envrc
 /inventory.yaml
-.coverage
+.rerun.json
 .librarian
 .kitchen
 .tmp
 .bundle
-/cover/
-/ci/
+bolt.log
 Puppetfile.lock
+modules
