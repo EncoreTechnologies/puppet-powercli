@@ -1,5 +1,4 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'powercli'))
-require 'ruby-pwsh'
 
 Puppet::Type.type(:powercli_esx_vs_portgroup).provide(:api, parent: Puppet::Provider::PowerCLI) do
   commands powershell: 'powershell.exe'

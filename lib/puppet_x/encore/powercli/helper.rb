@@ -1,4 +1,5 @@
 require 'puppet_x'
+require 'ruby-pwsh'
 require 'singleton'
 
 module PuppetX::PowerCLI

@@ -1,5 +1,4 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'powercli'))
-require 'ruby-pwsh'
 require 'uri'
 
 Puppet::Type.type(:powercli_esx_syslog).provide(:api, parent: Puppet::Provider::PowerCLI) do

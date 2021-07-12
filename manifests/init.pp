@@ -32,7 +32,6 @@ class powercli (
   Optional[Powercli::Connection] $vcenter_connection = undef,
   Optional[Hash]                 $config             = $powercli::params::config,
 ) inherits powercli::params {
-
   pspackageprovider { 'Nuget':
     ensure => 'present',
   }
